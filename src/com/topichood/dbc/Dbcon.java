@@ -16,9 +16,9 @@ import java.util.logging.Logger;
  */
 public class Dbcon {
     private static final String DBDRIVER="com.mysql.jdbc.Driver";
-    private static final String DBURL="jdbc:mysql://angchen.cu.cc:3306/travelpal";
-    private static final String DBUSER="angchen";
-    private static final String DBPASSWORD="angchen";
+    private static final String DBURL="jdbc:mysql://localhost:8889/topichood";
+    private static final String DBUSER="root";
+    private static final String DBPASSWORD="root";
     private Connection conn=null;
     
     public Dbcon(){

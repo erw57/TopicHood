@@ -5,6 +5,13 @@ public class Topic {
 	private int id;
 	private String name;
 	private int volume;
+	
+	public Topic(int id, String name, int volume){
+		this.id = id;
+		this.name = name;
+		this.volume = volume;
+	}
+	
 	public int getId() {
 		return id;
 	}
