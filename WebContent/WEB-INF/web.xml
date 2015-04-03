@@ -9,13 +9,4 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
-  
-<!--    <servlet>
-        <servlet-name>GetTweets</servlet-name>
-        <servlet-class>com.topichood.bo.GetTweets</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>GetTweets</servlet-name>
-        <url-pattern>/GetTweets</url-pattern>
-    </servlet-mapping> -->
 </web-app>

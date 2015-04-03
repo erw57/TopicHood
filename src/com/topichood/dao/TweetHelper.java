@@ -23,8 +23,8 @@ public class TweetHelper {
     	ArrayList <Tweet> tweets = new ArrayList<Tweet>();
     	try {
 			st = conn.createStatement();
-			String sql = "SELECT * FROM tweets t, tweet_tags_r r Where r.tweet_id = t.tweet_id And t.created_at between '" + start 
-					+ "' And '" + end + "' And r.tag_id = " + topicId;
+			String sql = "SELECT * FROM tweets t, tweet_tags_r r, tweet_tags w Where r.tweet_id = t.tweet_id And t.created_at between '" + start 
+					+ "' And '" + end + "' And r.tag_id = " + topicId+" AND w.id = r.tag_id";
 	    	
 	    	rs = st.executeQuery(sql);
 			while(rs.next()){

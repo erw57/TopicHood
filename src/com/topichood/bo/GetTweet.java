@@ -21,14 +21,14 @@ import com.topichood.vo.Tweet;
 /**
  * Servlet implementation class getTweets
  */
-@WebServlet("/GetTweets")
-public class GetTweets extends HttpServlet {
+@WebServlet("/GetTweet")
+public class GetTweet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetTweets() {
+    public GetTweet() {
         super();
         // TODO Auto-generated constructor stub
     }
