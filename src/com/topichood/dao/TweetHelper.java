@@ -30,10 +30,11 @@ public class TweetHelper {
 			while(rs.next()){
 				Tweet t = new Tweet();
 				t.setId(rs.getString("tweet_id"));
-				t.setLat(rs.getFloat("geo_lat"));
-				t.setLng(rs.getFloat("geo_long"));
-				t.setTopic(rs.getString("tag"));
-				t.setCreatedAt(rs.getString("created_at"));
+				t.setGeo(rs.getFloat("geo_lat"), rs.getFloat("geo_long"));
+				//t.setLat(rs.getFloat("geo_lat"));
+				//t.setLng(rs.getFloat("geo_long"));
+				//t.setTopic(rs.getString("tag"));
+				//t.setCreatedAt(rs.getString("created_at"));
 				tweets.add(t);
 			}
 			rs.close();
