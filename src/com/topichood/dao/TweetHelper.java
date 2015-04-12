@@ -37,9 +37,6 @@ public class TweetHelper {
 				//t.setCreatedAt(rs.getString("created_at"));
 				tweets.add(t);
 			}
-			rs.close();
-			st.close();
-			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

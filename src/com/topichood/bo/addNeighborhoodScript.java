@@ -53,7 +53,6 @@ public class addNeighborhoodScript {
 	    		st2 = conn.createStatement();
 	    		String sql2 = "Update tweets set neighborhood = '"+name+"' where tweet_id = '"+rs.getString("tweet_id")+"'";
 	            st2.executeUpdate(sql2);
-	            
 	    	}
 		} catch (SQLException | InterruptedException e) {
 			// TODO Auto-generated catch block
