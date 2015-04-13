@@ -77,7 +77,7 @@ public class GetTopicTweets extends HttpServlet {
 			o.element("tag", tag.get("name"));
 			o.element("proportion", tag.get("proportion"));
 			JSONArray tweets = new JSONArray();
-			List<Tweet> tweetList = tweethelper.getTweet(start, end, topicId);
+			List<Tweet> tweetList = tweethelper.getTweet(start, end, Integer.parseInt(tag.getString("id")));
 			tweets = JSONArray.fromObject(tweetList);
 			o.element("tweets", tweets);
 			data.add(o);
