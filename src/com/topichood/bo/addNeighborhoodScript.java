@@ -38,7 +38,7 @@ public class addNeighborhoodScript {
 	    
 	    try {
 			st = conn.createStatement();
-			String sql = "select * from tweets order by tweet_id";
+			String sql = "select * from tweets where neighborhood is null order by tweet_id";
 	    	rs = st.executeQuery(sql);
 	    	long i = 0;
 	    	while(rs.next()){

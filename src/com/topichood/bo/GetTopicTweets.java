@@ -39,13 +39,12 @@ public class GetTopicTweets extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int size = 5;
-		String str = "2011-05-09 11:49:45";
+		String str = "2015-02-01 0:0:0";
 		Timestamp time = new Timestamp(System.currentTimeMillis());
 		time = Timestamp.valueOf(str);
 		
-		int topicId = 8;
-		String s = "2015-01-01 0:0:0";
-		String e = "2015-01-30 0:0:0";
+		String s = "2015-02-01 0:0:0";
+		String e = "2015-03-1 0:0:0";
 		Timestamp start = new Timestamp(System.currentTimeMillis());
 		start = Timestamp.valueOf(s);
 		Timestamp end = new Timestamp(System.currentTimeMillis());
