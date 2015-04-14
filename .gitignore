@@ -1,2 +1,10 @@
 /build
 *.class
+
+.classpath
+
+.settings/org.eclipse.jdt.core.prefs
+
+.classpath
+
+.classpath
