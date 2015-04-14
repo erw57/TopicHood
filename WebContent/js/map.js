@@ -1,6 +1,5 @@
 var colorSet = ['#145694', '#9EB9E4', '#FF6A00', '#FAAA5E', '#22931A'];
-var limit = 500;
-
+var limit = 0;
 var mapLoader = {
     onTokenAccessReady: function() {
 
@@ -11,7 +10,6 @@ var mapLoader = {
         this.myMap.setView([40.443, -79.988], 13);
         return this;
     },
-
     addNode: function() {
         var $this = this; // =>mapLoader
         $.ajax({
@@ -22,27 +20,19 @@ var mapLoader = {
                     var tags = [];
                     var pieChartData = [];
                     for (var q = 0; q < 5; q++) {
-                        console.log(q, ': ', data.data[q].tweets.length);
+                        //console.log(q, ': ', data.data[q].tweets.length);
                         tags.push(data.tags[q].name);
                         pieChartData.push([data.tags[q].name, data.tags[q].proportion]);
                         if (q === 0) {
                             limit = data.data[q].tweets.length;
-                            console.log(limit);
+                            //console.log(limit);
                         } else {
                             limit = (data.data[q].tweets.length < limit ? data.data[q].tweets.length : limit);
-                            console.log(limit);
+                            //console.log(limit);
                         }
-
-
                     }
-
-
-                    console.log(limit);
+                    this.tags = tags; //Convert local variable to function's variable
                     $this.myMap.featureLayer.setGeoJSON(GeoJson(data.data));
-
-
-
-
                     var count = 0;
                     // Add class tags[k] to No.count <img>
                     for (var k = 0; k < tags.length; k++) {
@@ -57,20 +47,47 @@ var mapLoader = {
                             if (mapDot && !mapDot.classList.contains(tags[k])) {
                                 // console.log(x, count, x + count);
                                 mapDot.classList.add(tags[k]);
+
                             } else {
                                 // console.log(x, count, k + count);
                             }
 
                         }
                     }
+
+
+
+                    $('.leaflet-marker-pane').find('img').click(function() {
+                        var img = $(this); //Dot on map.
+                        var tweetId = $('.marker-description').text();
+                        console.log(tweetId);
+                        $('.leaflet-popup-content').html('');
+                        twttr.widgets.createTweet(tweetId, $('.leaflet-popup-content')[0]);
+                        console.log($('.leaflet-popup-content').find('iframe').css('visibility'));
+                        window.setTimeout(function() {
+                            if ($('.leaflet-popup-content').find('iframe').css('visibility') == 'hidden') {
+                                $('.leaflet-popup-content').html('<p class=\'delete-tweet\'>Tweet has been deleted by author</p>');
+                                img.remove();
+
+                            }
+                        }, 500);
+
+                    });
+                    //DRAW PIE CHART AND LINE CHART
                     var linePainter = new DataPainter();
                     linePainter.paintLineChart();
-                    console.log(pieChartData);
                     linePainter.paintPieChart(pieChartData);
 
 
                 } // end recall
         }); //end ajax
+        return this;
+    },
+    loadTopic: function() {
+        $('#topic').click(function() {
+            $('#dd-topic').toggle();
+
+        });
     }
 };
 
@@ -82,8 +99,6 @@ function GeoJson(data) {
         //console.log(i, data[i].tweets.length);
         for (var t = 0; t < limit; t++) {
             var node = {};
-
-
             node.type = 'Feature';
             node.geometry = {
                 type: 'Point',
@@ -94,7 +109,7 @@ function GeoJson(data) {
             node.properties = {
                 'marker-color': colorSet[i],
                 'marker-size': 'small',
-                'description': data[i].tweets[t].id
+                'description': data[i].tweets[t].id.toString()
             };
             //console.log(node);
             nodes.push(node);
@@ -104,13 +119,6 @@ function GeoJson(data) {
     //console.log(limit);
     return nodes;
 }
-
-
-
-
-
-
-
 
 function DataGenerate() {}
 
@@ -154,11 +162,7 @@ DataGenerate.prototype = {
         var result = [];
         for (var i = 0; i < data.length; i++) {
             result.push(new Value(data[i][0], data[i][1]));
-            //console.log(new Value(data[i][0], data[i][1]));
         }
-
-        // result.push(new Value('#Pitts', 25));
-        //console.log(result);
         return result;
     }
 };
@@ -226,15 +230,11 @@ DataPainter.prototype = {
 };
 
 
-
 $(document).ready(function() {
     // Load Map
     // use mapLoader.addNode() to refresh the view;
     L.mapbox.accessToken = 'pk.eyJ1IjoibGlhb2thaWVuIiwiYSI6IkNVSndxVlUifQ.7LsEhdgYXzlK4MH_U_6c0w';
     mapLoader.onTokenAccessReady().addNode();
-
-
-
     //Load Carousel
     $('#chart').owlCarousel({
         //navigation : true, // Show next and prev buttons
@@ -244,8 +244,4 @@ $(document).ready(function() {
     });
 
     //Get data and display the line chart
-
-
-
-
 });
