@@ -42,7 +42,7 @@ public class addNeighborhoodScript {
 	    	rs = st.executeQuery(sql);
 	    	long i = 0;
 	    	while(rs.next()){
-	    		Thread.sleep(400);
+	    		Thread.sleep(200);
 	    		String url = "http://maps.googleapis.com/maps/api/geocode/json?latlng="+rs.getFloat("geo_lat")+","+rs.getFloat("geo_long")+"&sensor=true";
 	            String json = loadJSON(url);
 	            JSONObject obj = new JSONObject();
@@ -50,6 +50,9 @@ public class addNeighborhoodScript {
 	            System.out.println(rs.getString("tweet_id")+"---"+(i++)+"----"+obj.toString());
 	            String name =((JSONArray) obj.get("results")).getJSONObject(0).getJSONArray("address_components").getJSONObject(2).getString("short_name");
 	            System.out.println(name);
+	            if(name.equals("O'Hara")){
+	            	continue;
+	            }
 	    		st2 = conn.createStatement();
 	    		String sql2 = "Update tweets set neighborhood = '"+name+"' where tweet_id = '"+rs.getString("tweet_id")+"'";
 	            st2.executeUpdate(sql2);

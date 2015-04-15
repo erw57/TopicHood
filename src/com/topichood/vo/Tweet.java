@@ -9,6 +9,7 @@ public class Tweet {
 	//private float lng;
 	//private String topic;
 	//private String createdAt;
+	private String neighbor;
 	public String getId() {
 		return id;
 	}
@@ -18,8 +19,14 @@ public class Tweet {
 	public void setGeo(float lat, float lng){
 		this.geo = new float[]{lat,lng};
 	}
+	public void setNei(String nei){
+		this.neighbor = nei;
+	}
 	public float[] getGeo(){
 		return this.geo;
+	}
+	public String getNei(){
+		return this.neighbor;
 	}
 //	public float getLat() {
 //		return lat;

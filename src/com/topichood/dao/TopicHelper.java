@@ -18,15 +18,18 @@ public class TopicHelper {
     private Connection conn=dbc.getConnection();
     private Statement st=null;
     private ResultSet rs=null;
-    private String message=null;
     
-    public List<Topic> getTopic(Timestamp latest,int size) {
+    public List<Topic> getTopic(Timestamp from,Timestamp to, int size, String neighbors) {
     	ArrayList<Topic> topics = new ArrayList<Topic>();
     	try {
     		st = conn.createStatement();
+//			String sql = "SELECT tag_id, tag, count(tag) FROM tweet_tags t, tweet_tags_r r, "
+//					+ "tweets ts where ts.neighborhood in ("+neighbors+") And t.id = r.tag_id And r.tweet_id = ts.tweet_id And ts.created_at between ' "+from+" ' "
+//					+ "and '"+to+"' " + "group by tag order By count(tag) DESC limit "+size;
 			String sql = "SELECT tag_id, tag, count(tag) FROM tweet_tags t, tweet_tags_r r, "
-					+ "tweets ts where t.id = r.tag_id And r.tweet_id = ts.tweet_id And ts.created_at > ' "+latest+" ' "
-					+ "group by tag order By count(tag) DESC limit "+size;
+					+ "tweets ts where t.id = r.tag_id And r.tweet_id = ts.tweet_id And ts.created_at between ' "+from+" ' "
+					+ "and '"+to+"' " + "group by tag order By count(tag) DESC limit "+size;
+			//System.out.println(sql);
 			//st.setTimestamp(1, latest);
 			//st.setInt(2, size);
 			rs = st.executeQuery(sql);
@@ -34,13 +37,21 @@ public class TopicHelper {
 				Topic p = new Topic(rs.getInt("tag_id"), rs.getString("tag"), rs.getInt("count(tag)"));
 				topics.add(p);
 			}
-			rs.close();
-			st.close();
-			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	return topics;
+    }
+    
+    public void closeConn(){
+    	try {
+			//rs.close();
+			st.close();
+	    	conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
     }
 }

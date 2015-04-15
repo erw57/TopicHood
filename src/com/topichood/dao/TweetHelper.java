@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.topichood.dbc.Dbcon;
+import com.topichood.vo.Point;
 import com.topichood.vo.Tweet;
 
 public class TweetHelper {
@@ -17,13 +18,14 @@ public class TweetHelper {
     private Connection conn=dbc.getConnection();
     private Statement st=null;
     private ResultSet rs=null;
-    private String message=null;
     
-    public ArrayList<Tweet> getTweet(Timestamp start, Timestamp end, int topicId){
+    public ArrayList<Tweet> getTweet(Timestamp start, Timestamp end, int topicId, String neighbors){
     	ArrayList <Tweet> tweets = new ArrayList<Tweet>();
     	try {
 			st = conn.createStatement();
-			String sql = "SELECT * FROM tweets t, tweet_tags_r r, tweet_tags w Where r.tweet_id = t.tweet_id And t.created_at between '" + start 
+//			String sql = "SELECT * FROM tweets t, tweet_tags_r r, tweet_tags w Where t.neighborhood IN ("+neighbors+") AND r.tweet_id = t.tweet_id And t.created_at between '" + start 
+//					+ "' And '" + end + "' And r.tag_id = " + topicId+" AND w.id = r.tag_id";
+			String sql = "SELECT * FROM tweets t, tweet_tags_r r, tweet_tags w where r.tweet_id = t.tweet_id And t.created_at between '" + start 
 					+ "' And '" + end + "' And r.tag_id = " + topicId+" AND w.id = r.tag_id";
 	    	
 	    	rs = st.executeQuery(sql);
@@ -31,6 +33,7 @@ public class TweetHelper {
 				Tweet t = new Tweet();
 				t.setId(rs.getString("tweet_id"));
 				t.setGeo(rs.getFloat("geo_lat"), rs.getFloat("geo_long"));
+				t.setNei(rs.getString("neighborhood"));
 				//t.setLat(rs.getFloat("geo_lat"));
 				//t.setLng(rs.getFloat("geo_long"));
 				//t.setTopic(rs.getString("tag"));
@@ -43,4 +46,48 @@ public class TweetHelper {
 		}  	
 		return tweets;
 	}
+    
+    public int getTweetCount(Timestamp start, Timestamp end, int topicId, String neighbors){
+    	int count = 0;
+    	try {
+//    		String sql = "SELECT count(*) FROM tweets t, tweet_tags_r r Where r.tweet_id = t.tweet_id And t.created_at between '" + start 
+//    				+ "' and '" + end + "' And t.neighborhood in ("+neighbors+") And r.tag_id = " + topicId;
+    		String sql = "SELECT count(*) FROM tweets t, tweet_tags_r r Where r.tweet_id = t.tweet_id And t.created_at between '" + start 
+    				+ "' and '" + end + "' And r.tag_id = " + topicId;
+			//System.out.println(sql);
+    		st = conn.createStatement();
+    		rs = st.executeQuery(sql);
+			if(rs.next()){
+				count = rs.getInt("count(*)");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return count;
+    	
+    }
+    
+    public List<Point> getTopicVolume(int topicId, Timestamp from, Timestamp to, int unit, String neighbors){
+    	List<Point> points = new ArrayList<Point>();
+    	int x = 1;
+    	for(long mark = from.getTime();mark < to.getTime();mark+=unit,x++){
+			Point point  = new Point();
+			point.setX(x);
+			point.setY(getTweetCount(new Timestamp(mark), new Timestamp(mark + unit), topicId, neighbors));
+			points.add(point);
+		}
+    	return points;
+    }
+    
+    public void closeConn(){
+    	try {
+			rs.close();
+			st.close();
+	    	conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+    }
 }

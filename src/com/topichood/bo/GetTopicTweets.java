@@ -3,6 +3,7 @@ package com.topichood.bo;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -14,8 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import com.topichood.bo.GetTopicTweets;
 import com.topichood.dao.TopicHelper;
 import com.topichood.dao.TweetHelper;
+import com.topichood.vo.Point;
 import com.topichood.vo.Topic;
 import com.topichood.vo.Tweet;
 
@@ -25,7 +28,6 @@ import com.topichood.vo.Tweet;
 @WebServlet("/GetTopicTweets")
 public class GetTopicTweets extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -38,37 +40,77 @@ public class GetTopicTweets extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int size = 5;
-		String str = "2015-02-01 0:0:0";
-		Timestamp time = new Timestamp(System.currentTimeMillis());
-		time = Timestamp.valueOf(str);
+		//read json
+//		JSONObject jo = new JSONObject();
+//		jo = ReadJSON.readJson(request);
+//		String timeSpan = jo.getString("time");
+//		JSONArray neighborsjo = jo.getJSONArray("neighbors");
+		String timeSpan = request.getParameter("time");
+		String neighbors = request.getParameter("neighborhood");
+		//get neighborhoods list
+		if(neighbors == null){
+			neighbors = "'Shadyside'";
+		}
 		
-		String s = "2015-02-01 0:0:0";
-		String e = "2015-03-1 0:0:0";
-		Timestamp start = new Timestamp(System.currentTimeMillis());
-		start = Timestamp.valueOf(s);
-		Timestamp end = new Timestamp(System.currentTimeMillis());
-		end = Timestamp.valueOf(e);
+		//get time
+		String timeStr = "";
+		int unit;
+		if(timeSpan == null){
+			timeStr = "2015-01-02 0:0:0";
+			unit = 60*60*1000; //one hour
+		}
+		else if(timeSpan.equals("day")){
+			timeStr = "2015-01-02 0:0:0";
+			unit = 60*60*1000;  //one hour
+		}
+		else if(timeSpan.equals("week")){
+			timeStr = "2015-01-01 0:0:0";
+			unit = 60*60*24*1000;  //one day
+		}
+		else{//month
+			timeStr = "2015-01-01 0:0:0";
+			unit = 60*60*24*1000; //one day
+		}
+		//top 5 topics
+		int size = 5;
+		Timestamp from = new Timestamp(System.currentTimeMillis());
+		from = Timestamp.valueOf(timeStr);
+		
+		Timestamp to = new Timestamp(System.currentTimeMillis());
+		to = Timestamp.valueOf("2015-01-03 0:0:0");
+		
+//		String s = "2015-02-01 0:0:0";
+//		String e = "2015-01-3 0:0:0";
+//		Timestamp start = new Timestamp(System.currentTimeMillis());
+//		start = Timestamp.valueOf(s);
+//		Timestamp end = new Timestamp(System.currentTimeMillis());
+//		end = Timestamp.valueOf(e);
 		
 		JSONObject backEndData = new JSONObject();
 		TopicHelper topichelper = new TopicHelper();
+		TweetHelper tweethelper = new TweetHelper();
 		JSONArray tags = new JSONArray();
-		List<Topic> topicList = topichelper.getTopic(time, size);
+		//get top 5 topics
+		List<Topic> topicList = topichelper.getTopic(from,to,size,neighbors);
 		long total = 0;
 		for(Topic topic : topicList){
 			total+=topic.getVolume();
 		}
-		System.out.println(total);
 		
 		for(Topic topic : topicList){
+			System.out.println("Volume:"+topic.getName()+"----"+topic.getVolume());
 			JSONObject jsonObject = JSONObject.fromObject(topic);
+			//calculate proportion
 			String proportion = getPercent(topic.getVolume(),total);
 			proportion = proportion.substring(0, proportion.length()-1);
 			jsonObject.element("proportion", proportion);
+			//get points on chart
+			List<Point> points = tweethelper.getTopicVolume(topic.getId(),from,to,unit,neighbors);
+			JSONArray pointArray = JSONArray.fromObject(points);
+			jsonObject.element("points", pointArray);
 			tags.add(jsonObject);
 		}
 		
-		TweetHelper tweethelper = new TweetHelper();
 		JSONArray data = new JSONArray();
 		for(int i=0;i<tags.size();i++){
 			JSONObject o = new JSONObject();
@@ -76,11 +118,16 @@ public class GetTopicTweets extends HttpServlet {
 			o.element("tag", tag.get("name"));
 			o.element("proportion", tag.get("proportion"));
 			JSONArray tweets = new JSONArray();
-			List<Tweet> tweetList = tweethelper.getTweet(start, end, Integer.parseInt(tag.getString("id")));
+			List<Tweet> tweetList = tweethelper.getTweet(from, to, Integer.parseInt(tag.getString("id")),neighbors);
 			tweets = JSONArray.fromObject(tweetList);
+			System.out.println("tweets length:"+tag.get("name")+"-----"+tweets.size());
 			o.element("tweets", tweets);
 			data.add(o);
 		}
+		//close db connection
+		//topichelper.closeConn();
+		//tweethelper.closeConn();
+		
 		backEndData.element("tags", tags);
 		backEndData.element("data", data);
 		response.setContentType("text/json");
@@ -96,7 +143,7 @@ public class GetTopicTweets extends HttpServlet {
 		   double tempresult=x_double/total_double;  
 		   NumberFormat nf = NumberFormat.getPercentInstance(); 
 		   nf.setMinimumFractionDigits( 2 );      
-		   //DecimalFormat df1 = new DecimalFormat("0.00%");    //##.00%   百分比格式，后面不足2位的用0补齐  
+		   //DecimalFormat df1 = new DecimalFormat("0.00%");  
 		   result=nf.format(tempresult);     
 		   //result= df1.format(tempresult);    
 		   return result;  
