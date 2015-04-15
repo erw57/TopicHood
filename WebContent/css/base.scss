@@ -1,0 +1,130 @@
+$monospace: Menlo,
+Monaco,
+Consolas,
+"Courier New",
+monospace;
+//color
+$cursive: 'Lobster',
+cursive;
+$title:'Press Start 2P',
+cursive;
+$emerald: #48ff89;
+$orange: #ffbb00;
+$blue: #42bcff;
+$red: #ff5356;
+$purple: #991581;
+$agua: #17ffd6;
+@mixin oval($diameter) {
+    width: $diameter;
+    height: $diameter;
+    border-radius: 100%;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+nav {
+    background-color: #ffffff;
+    min-height: 56px;
+    margin: -10px 0px 0px -10px;
+    padding-top: 10px;
+    padding-left: 20px;
+    color: #193940;
+    font-family: $monospace;
+    font-size: 1.2em;
+    border-bottom: solid $orange 5px;
+    #title {
+        margin-right: 40px;
+        font-size: 1.5em;
+        font-family: $cursive;
+        color: $orange;
+    }
+    #title:hover {
+        border-bottom: solid 10px $orange;
+        padding-bottom: 16px;
+    }
+    span {
+        cursor: pointer;
+    }
+    #count {
+        color: $blue;
+        cursor: default;
+    }
+    #topic {}
+    #topic:hover {
+        border-bottom: solid 10px $orange;
+        padding-bottom: 16px;
+    }
+    #timespan {}
+    #timespan:hover {
+        border-bottom: solid 10px $orange;
+        padding-bottom: 16px;
+    }
+    #area {}
+    #area:hover {
+        border-bottom: solid 10px $orange;
+        padding-bottom: 16px;
+    }
+}
+
+//Style of the dropdown layer;
+#menu {
+    z-index: 3;
+    position: absolute;
+    ul {
+        display: none;
+    }
+    #dd-topic {
+        width: 100px;
+        padding: 0px 5px;
+        margin-left: 410px;
+        margin-top: -20px;
+        list-style-type: none;
+        background-color: rgba(255, 255, 255, 0.75);
+    }
+}
+
+aside {
+    height: 80%;
+    #chart {
+        background-color: rgba(255, 255, 255, 0.75);
+        border-radius: 5px;
+        box-shadow: 1px 1px 5px rgba(103, 103, 103, 0.85);
+        height: 450px;
+        left: 48px;
+        max-width: 400px;
+        position: relative;
+        top: 48px;
+        z-index: 2;
+    }
+}
+
+.owl-item {
+    section {
+        width: 95%;
+        height: 280px;
+        border: dashed lemonchiffon 1px;
+        margin: 30px auto;
+    }
+}
+
+#map {
+    height: 89%;
+    overflow: hidden;
+}
+
+// Overwirte the default style of Mapbox element.
+.nv-axisMaxMin {
+    color: #ffffff;
+}
+
+.marker-description {
+    width: 400px;
+    text-align: center;
+    div {
+        height: 120px;
+        width: 300px;
+    }
+}

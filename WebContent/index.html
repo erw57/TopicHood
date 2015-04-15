@@ -1,10 +1,60 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<title>TopicHood</title>
+    <meta charset="utf-8">
+    <title>TopicHood</title>
+    <link href='http://fonts.googleapis.com/css?family=Lobster|Press+Start+2P' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="bower_components/normalize.css/normalize.css" />
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.css' rel='stylesheet' />
+    <link rel="stylesheet" href="bower_components/d3/nv.d3.min.css" />
+    <link rel="stylesheet" href="bower_components/owl.carousel/owl-carousel/owl.carousel.css" />
+    <link rel="stylesheet" href="bower_components/owl.carousel/owl-carousel/owl.theme.css" />
+    <!--<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />-->
+    <link rel="stylesheet" href="bower_components/font-awesome-4.3.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="css/base.css" />
 </head>
+
 <body>
-	First TEST
+    <nav>
+        <p>
+            <span id="title">Topic Hood</span>
+            <span id="count"></span> people talked about
+            <span id="topic"><i class="fa fa-caret-down"></i></span> over last
+            <span id="timespan"><i class="fa fa-caret-down"></i></span> in
+            <span id="area"><i class="fa fa-caret-down"></i></span>
+        </p>
+    </nav>
+    <div id='menu'>
+        <!-- Dropdown(dd) menu for topics -->
+        <ul id='dd-topic'>
+        </ul>
+    </div>
+    <div id="map">
+        <aside>
+            <section id="chart" class="owl-carousel">
+                <section id="chart-line" class="item">
+                    <svg/>
+                </section>
+                <section id="chart-pie" class="item">
+                    <svg/>
+                </section>
+                <section id="chart-network" class="item">
+                    <svg/>
+                </section>
+            </section>
+        </aside>
+    </div>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/owl.carousel/owl-carousel/owl.carousel.min.js"></script>
+    <script src="bower_components/d3/d3.min.js" charset="utf-8"></script>
+    <script src="bower_components/d3/nv.d3.min.js" charset="utf-8"></script>
+    <!--<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>-->
+    <script src="https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.js"></script>
+    <!-- Load Twitter Widget-->
+    <script src="js/get.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/main.js"></script>
 </body>
+
 </html>
