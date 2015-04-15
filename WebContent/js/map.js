@@ -1,5 +1,13 @@
 var colorSet = ['#145694', '#9EB9E4', '#FF6A00', '#FAAA5E', '#22931A'];
 var limit = 0;
+// Element will be initialized to insert element into page;
+function Element() {
+    this.li = $('<li></li>');
+    this.label = $('<label for=\'\'></label>');
+    this.checkbox = $('<input type= \'checkbox\'></label>');
+
+}
+
 var mapLoader = {
     onTokenAccessReady: function() {
 
@@ -31,9 +39,11 @@ var mapLoader = {
                             //console.log(limit);
                         }
                     }
-                    this.tags = tags; //Convert local variable to function's variable
+                    limit = 5;
+                    $this.tags = tags; //Convert local variable to function's variable
                     $this.myMap.featureLayer.setGeoJSON(GeoJson(data.data));
                     var count = 0;
+
                     // Add class tags[k] to No.count <img>
                     for (var k = 0; k < tags.length; k++) {
                         if (k === 0) {
@@ -41,38 +51,59 @@ var mapLoader = {
                         } else {
                             count += limit;
                         }
+
                         for (var x = 0; x < limit; x++) {
                             var mapDot = $('.leaflet-marker-pane').find('img')[x + count];
 
                             if (mapDot && !mapDot.classList.contains(tags[k])) {
-                                // console.log(x, count, x + count);
+                                //console.log(x, count, x + count);
                                 mapDot.classList.add(tags[k]);
 
                             } else {
-                                // console.log(x, count, k + count);
+                                console.log('F', x, count, k + count);
                             }
 
                         }
                     }
 
 
-
+                    console.log($('.leaflet-marker-pane').find('img').length);
                     $('.leaflet-marker-pane').find('img').click(function() {
                         var img = $(this); //Dot on map.
                         var tweetId = $('.marker-description').text();
-                        console.log(tweetId);
+                        //console.log(tweetId);
                         $('.leaflet-popup-content').html('');
                         twttr.widgets.createTweet(tweetId, $('.leaflet-popup-content')[0]);
-                        console.log($('.leaflet-popup-content').find('iframe').css('visibility'));
+                        //console.log($('.leaflet-popup-content').find('iframe').css('visibility'));
                         window.setTimeout(function() {
                             if ($('.leaflet-popup-content').find('iframe').css('visibility') == 'hidden') {
                                 $('.leaflet-popup-content').html('<p class=\'delete-tweet\'>Tweet has been deleted by author</p>');
                                 img.remove();
 
                             }
-                        }, 500);
+                        }, 350);
 
                     });
+                    //Load dropdown menus
+                    $('#topic').click(function() {
+                        $('#dd-topic').toggle();
+                        if ($('#dd-topic').find('li').length === 0) {
+                            for (var i = 0; i < $this.tags.length; i++) {
+                                //console.log('e');
+                                var lis = new Element();
+                                $('#dd-topic').append(lis.li);
+                                $('#dd-topic>li').eq(i).append(lis.checkbox.attr('id', $this.tags[i]));
+                                $('#' + $this.tags[i]).attr('checked', true);
+                                $('#dd-topic>li').eq(i).append(lis.label.attr('for', $this.tags[i]));
+                                $('#dd-topic>li').eq(i).find('label').text($this.tags[i]);
+                                $('#dd-topic>li').eq(i).find('input').click(onTopicClick);
+                            }
+                        }
+                    });
+
+
+
+
                     //DRAW PIE CHART AND LINE CHART
                     var linePainter = new DataPainter();
                     linePainter.paintLineChart();
@@ -84,19 +115,18 @@ var mapLoader = {
         return this;
     },
     loadTopic: function() {
-        $('#topic').click(function() {
-            $('#dd-topic').toggle();
-
-        });
+        $this = this;
     }
 };
+
+
 
 function GeoJson(data) {
     nodes = [];
     // i = topic number
     for (var i = 0; i < data.length; i++) {
         // t= the num of each tweet within one topic
-        //console.log(i, data[i].tweets.length);
+
         for (var t = 0; t < limit; t++) {
             var node = {};
             node.type = 'Feature';
@@ -111,12 +141,12 @@ function GeoJson(data) {
                 'marker-size': 'small',
                 'description': data[i].tweets[t].id.toString()
             };
-            //console.log(node);
             nodes.push(node);
         }
         // We have add nodes of one topic to the map.
     }
     //console.log(limit);
+    console.log(nodes.length);
     return nodes;
 }
 
@@ -234,7 +264,7 @@ $(document).ready(function() {
     // Load Map
     // use mapLoader.addNode() to refresh the view;
     L.mapbox.accessToken = 'pk.eyJ1IjoibGlhb2thaWVuIiwiYSI6IkNVSndxVlUifQ.7LsEhdgYXzlK4MH_U_6c0w';
-    mapLoader.onTokenAccessReady().addNode();
+    mapLoader.onTokenAccessReady().addNode().loadTopic();
     //Load Carousel
     $('#chart').owlCarousel({
         //navigation : true, // Show next and prev buttons
@@ -245,3 +275,22 @@ $(document).ready(function() {
 
     //Get data and display the line chart
 });
+
+
+function onTopicClick() {
+    var isChecked = $(this).prop('checked');
+    console.log(typeof isChecked);
+    var c = 0;
+    if ($(this).prop('checked') === false) {
+        $('.' + $(this).attr('id')).each(function() {
+            $(this).hide();
+
+        });
+    } else {
+        $('.' + $(this).attr('id')).each(function() {
+            $(this).show();
+        });
+
+    }
+
+}

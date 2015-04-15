@@ -42,7 +42,7 @@ public class addNeighborhoodScript {
 	    	rs = st.executeQuery(sql);
 	    	long i = 0;
 	    	while(rs.next()){
-	    		Thread.sleep(400);
+	    		Thread.sleep(200);
 	    		String url = "http://maps.googleapis.com/maps/api/geocode/json?latlng="+rs.getFloat("geo_lat")+","+rs.getFloat("geo_long")+"&sensor=true";
 	            String json = loadJSON(url);
 	            JSONObject obj = new JSONObject();
