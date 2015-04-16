@@ -35,38 +35,48 @@ nav {
     font-family: $monospace;
     font-size: 1.2em;
     border-bottom: solid $orange 5px;
-    #title {
-        margin-right: 40px;
-        font-size: 1.5em;
-        font-family: $cursive;
-        color: $orange;
-    }
-    #title:hover {
-        border-bottom: solid 10px $orange;
-        padding-bottom: 16px;
-    }
-    span {
-        cursor: pointer;
-    }
-    #count {
-        color: $blue;
-        cursor: default;
-    }
-    #topic {}
-    #topic:hover {
-        border-bottom: solid 10px $orange;
-        padding-bottom: 16px;
-    }
-    #timespan {}
-    #timespan:hover {
-        border-bottom: solid 10px $orange;
-        padding-bottom: 16px;
-    }
-    #area {}
-    #area:hover {
-        border-bottom: solid 10px $orange;
-        padding-bottom: 16px;
-    }
+}
+
+#title {
+    margin-right: 40px;
+    font-size: 1.5em;
+    font-family: $cursive;
+    color: $orange;
+}
+
+#title:hover {
+    border-bottom: solid 10px $orange;
+    padding-bottom: 16px;
+}
+
+span {
+    cursor: pointer;
+}
+
+#count {
+    color: $blue;
+    cursor: default;
+}
+
+#topic {}
+
+#topic:hover {
+    border-bottom: solid 10px $orange;
+    padding-bottom: 16px;
+}
+
+#timespan {}
+
+#timespan:hover {
+    border-bottom: solid 10px $orange;
+    padding-bottom: 16px;
+}
+
+#area {}
+
+#area:hover {
+    border-bottom: solid 10px $orange;
+    padding-bottom: 16px;
 }
 
 //Style of the dropdown layer;
@@ -80,6 +90,22 @@ nav {
         width: 100px;
         padding: 0px 5px;
         margin-left: 410px;
+        margin-top: -20px;
+        list-style-type: none;
+        background-color: rgba(255, 255, 255, 0.75);
+    }
+    #dd-timespan {
+        width: 100px;
+        padding: 0px 5px;
+        margin-left: 550px;
+        margin-top: -20px;
+        list-style-type: none;
+        background-color: rgba(255, 255, 255, 0.75);
+    }
+    #dd-neighborhood {
+        width: 100px;
+        padding: 0px 5px;
+        margin-left: 690px;
         margin-top: -20px;
         list-style-type: none;
         background-color: rgba(255, 255, 255, 0.75);

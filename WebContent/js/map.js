@@ -1,5 +1,6 @@
 var colorSet = ['#145694', '#9EB9E4', '#FF6A00', '#FAAA5E', '#22931A'];
 var limit = 0;
+var isOverflow = false;
 // Element will be initialized to insert element into page;
 function Element() {
     this.li = $('<li></li>');
@@ -22,25 +23,32 @@ var mapLoader = {
         var $this = this; // =>mapLoader
         $.ajax({
             url: 'http://localhost:8080/TopicHood/GetTopicTweets',
-            type: 'GET',
-            dataType: 'json',
+            type: 'POST',
+            data: {
+                time: 'day',
+                neighborhood: '\'Downtown\''
+            },
             success: function(data) {
                     var tags = [];
                     var pieChartData = [];
                     for (var q = 0; q < 5; q++) {
-                        //console.log(q, ': ', data.data[q].tweets.length);
                         tags.push(data.tags[q].name);
+                        var text = $('#topic').text();
+                        if (q > 0) {
+                            $('#topic').text(text + ' and ' + tags[q]);
+                        } else {
+                            $('#topic').text(tags[q]);
+                        }
                         pieChartData.push([data.tags[q].name, data.tags[q].proportion]);
                         if (q === 0) {
                             limit = data.data[q].tweets.length;
-                            //console.log(limit);
                         } else {
                             limit = (data.data[q].tweets.length < limit ? data.data[q].tweets.length : limit);
-                            //console.log(limit);
                         }
                     }
-                    limit = 5;
-                    $this.tags = tags; //Convert local variable to function's variable
+                    //Convert local variable to function's variable
+                    $this.tags = tags;
+                    window.tags = tags;
                     $this.myMap.featureLayer.setGeoJSON(GeoJson(data.data));
                     var count = 0;
 
@@ -101,15 +109,15 @@ var mapLoader = {
                         }
                     });
 
-
+                    $('#timespan').click(function() {
+                        $('#dd-timespan').toggle();
+                    });
 
 
                     //DRAW PIE CHART AND LINE CHART
                     var linePainter = new DataPainter();
                     linePainter.paintLineChart();
                     linePainter.paintPieChart(pieChartData);
-
-
                 } // end recall
         }); //end ajax
         return this;
@@ -271,26 +279,45 @@ $(document).ready(function() {
         slideSpeed: 3000,
         paginationSpeed: 400,
         singleItem: true
-    });
-
-    //Get data and display the line chart
+    }); //Get data and display the line chart
 });
 
 
 function onTopicClick() {
     var isChecked = $(this).prop('checked');
-    console.log(typeof isChecked);
     var c = 0;
+    var text, tagName;
     if ($(this).prop('checked') === false) {
+        tagName = $(this).attr('id');
+        text = $('#topic').text();
+        if (tagName == tags[0]) {
+            $('#topic').text(text.replace(tagName, ''));
+        } else {
+            $('#topic').text(text.replace('and ' + tagName, ''));
+        }
+
         $('.' + $(this).attr('id')).each(function() {
             $(this).hide();
 
         });
     } else {
-        $('.' + $(this).attr('id')).each(function() {
-            $(this).show();
-        });
+
+        text = $('#topic').text();
+        tagName = $(this).attr('id');
+        if (text.length > 0 && text.length < 10) {
+            $('#topic').text(text + ' and ' + tagName);
+        } else {
+            if (text.length > 0 && !isOverflow) {
+                $('#topic').text(text + '...');
+                isOverflow = true;
+            }
+
+        }
 
     }
+
+    $('.' + $(this).attr('id')).each(function() {
+        $(this).show();
+    });
 
 }
