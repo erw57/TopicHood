@@ -24,10 +24,9 @@ public class TweetHelper {
     	try {
 			st = conn.createStatement();
 //			String sql = "SELECT * FROM tweets t, tweet_tags_r r, tweet_tags w Where t.neighborhood IN ("+neighbors+") AND r.tweet_id = t.tweet_id And t.created_at between '" + start 
-//					+ "' And '" + end + "' And r.tag_id = " + topicId+" AND w.id = r.tag_id";
-			String sql = "SELECT * FROM tweets t, tweet_tags_r r, tweet_tags w where r.tweet_id = t.tweet_id And t.created_at between '" + start 
-					+ "' And '" + end + "' And r.tag_id = " + topicId+" AND w.id = r.tag_id";
-	    	
+//					+ "' And '" + end + "' And w.id = " + topicId+" AND w.id = r.tag_id";
+			String sql = "select * from tweets t, tweet_tags g, tweet_tags_r r where t.neighborhood in ("+neighbors+") and t.created_at between '"+start+"' and '"+end+"' and r.tweet_id = t.tweet_id and r.tag_id = g.id and g.id = "+topicId;
+
 	    	rs = st.executeQuery(sql);
 			while(rs.next()){
 				Tweet t = new Tweet();
@@ -50,10 +49,9 @@ public class TweetHelper {
     public int getTweetCount(Timestamp start, Timestamp end, int topicId, String neighbors){
     	int count = 0;
     	try {
-//    		String sql = "SELECT count(*) FROM tweets t, tweet_tags_r r Where r.tweet_id = t.tweet_id And t.created_at between '" + start 
-//    				+ "' and '" + end + "' And t.neighborhood in ("+neighbors+") And r.tag_id = " + topicId;
-    		String sql = "SELECT count(*) FROM tweets t, tweet_tags_r r Where r.tweet_id = t.tweet_id And t.created_at between '" + start 
-    				+ "' and '" + end + "' And r.tag_id = " + topicId;
+//    		String sql = "SELECT count(*) FROM tweets t, tweet_tags_r r, tweet_tags g Where r.tweet_id = t.tweet_id And t.created_at between '" + start 
+//    				+ "' and '" + end + "' And t.neighborhood in ("+neighbors+") And g.id = " + topicId+" and r.tag_id = g.id";
+    		String sql = "select count(*) from tweets t, tweet_tags g, tweet_tags_r r where t.neighborhood in ("+neighbors+") and t.created_at between '"+start+"' and '"+end+"' and r.tweet_id = t.tweet_id and r.tag_id = g.id and g.id = "+topicId;
 			//System.out.println(sql);
     		st = conn.createStatement();
     		rs = st.executeQuery(sql);

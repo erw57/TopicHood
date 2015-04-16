@@ -21,7 +21,11 @@ import com.topichood.dao.TweetHelper;
 import com.topichood.vo.Point;
 import com.topichood.vo.Topic;
 import com.topichood.vo.Tweet;
+/*
+ * select g.tag,count(g.tag) from tweets t, tweet_tags g, tweet_tags_r r where r.tweet_id = t.tweet_id and r.`tag_id` = g.`id` group by g.tag order by count(tweet_text) DESC;
 
+select * from tweets t, tweet_tags g, tweet_tags_r r where r.tweet_id = t.tweet_id and r.`tag_id` = g.`id` and g.tag = 'Pittsburgh';
+ * */
 /**
  * Servlet implementation class GetTopicTweets
  */
@@ -49,7 +53,7 @@ public class GetTopicTweets extends HttpServlet {
 		String neighbors = request.getParameter("neighborhood");
 		//get neighborhoods list
 		if(neighbors == null){
-			neighbors = "'Shadyside'";
+			neighbors = "'Downtown'";
 		}
 		
 		//get time
