@@ -60,11 +60,11 @@ public class GetTopicTweets extends HttpServlet {
 		String timeStr = "";
 		int unit;
 		if(timeSpan == null){
-			timeStr = "2015-01-02 0:0:0";
+			timeStr = "2015-01-05 0:0:0";
 			unit = 60*60*1000; //one hour
 		}
 		else if(timeSpan.equals("day")){
-			timeStr = "2015-01-02 0:0:0";
+			timeStr = "2015-01-05 0:0:0";
 			unit = 60*60*1000;  //one hour
 		}
 		else if(timeSpan.equals("week")){
@@ -81,7 +81,7 @@ public class GetTopicTweets extends HttpServlet {
 		from = Timestamp.valueOf(timeStr);
 		
 		Timestamp to = new Timestamp(System.currentTimeMillis());
-		to = Timestamp.valueOf("2015-01-03 0:0:0");
+		to = Timestamp.valueOf("2015-01-06 0:0:0");
 		
 //		String s = "2015-02-01 0:0:0";
 //		String e = "2015-01-3 0:0:0";

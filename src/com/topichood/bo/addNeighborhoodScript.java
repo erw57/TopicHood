@@ -50,7 +50,7 @@ public class addNeighborhoodScript {
 	            System.out.println(rs.getString("tweet_id")+"---"+(i++)+"----"+obj.toString());
 	            String name =((JSONArray) obj.get("results")).getJSONObject(0).getJSONArray("address_components").getJSONObject(2).getString("short_name");
 	            System.out.println(name);
-	            if(name.equals("O'Hara")){
+	            if(name.equals("O'Hara") || name.equals("O'Hara St") || name.equals("Washington's Landing")){
 	            	continue;
 	            }
 	    		st2 = conn.createStatement();
