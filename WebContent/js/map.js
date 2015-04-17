@@ -1,6 +1,7 @@
 var colorSet = ['#145694', '#9EB9E4', '#FF6A00', '#FAAA5E', '#22931A'];
 var limit = 0;
 var isOverflow = false;
+var isInit = false;
 // Element will be initialized to insert element into page;
 function Element() {
     this.li = $('<li></li>');
@@ -22,8 +23,8 @@ var mapLoader = {
     addNode: function(time, neighborhood) {
         var loader = this;
         if (!time && !neighborhood) {
-            time = 'week';
-            neighborhood = quo('Downtown');
+            time = 'day';
+            neighborhood = quo('Shadyside');
         }
         var $this = this; // =>mapLoader
         $.ajax({
@@ -51,18 +52,16 @@ var mapLoader = {
                     //Convert local variable to function's variable
                     $this.tags = tags;
                     $this.myMap.featureLayer.setGeoJSON(GeoJson(data.data));
-
                     var count = 0;
-
                     // Add class tags[k] to No.count <img>
                     for (var k = 0; k < tags.length; k++) {
                         if (k === 0) {
                             count = 0;
                         } else {
-                            count += limit;
+                            count += tags[k - 1];
                         }
 
-                        for (var x = 0; x < limit; x++) {
+                        for (var x = 0; x < data.data[k].tweets.length; x++) {
                             var mapDot = $('.leaflet-marker-pane').find('img')[x + count];
 
                             if (mapDot && !mapDot.classList.contains(tags[k])) {
@@ -70,13 +69,11 @@ var mapLoader = {
                                 mapDot.classList.add(tags[k]);
 
                             } else {
-                                console.log('F', x, count, k + count);
+                                //console.log('F', x, count, k + count);
                             }
 
                         }
                     }
-
-
                     console.log($('.leaflet-marker-pane').find('img').length);
                     $('.leaflet-marker-pane').find('img').click(function() {
                         var img = $(this); //Dot on map.
@@ -92,11 +89,14 @@ var mapLoader = {
 
                             }
                         }, 350);
-
                     });
                     //Load dropdown menus
-                    $('#topic').click(function() {
-                        $('#dd-topic').toggle();
+                    if (!isInit) {
+                        isInit = true;
+                        $('#topic').click(function() {
+                            $('#dd-topic').toggle();
+                        });
+
                         if ($('#dd-topic').find('li').length === 0) {
                             for (var i = 0; i < $this.tags.length; i++) {
                                 //console.log('e');
@@ -109,16 +109,20 @@ var mapLoader = {
                                 $('#dd-topic>li').eq(i).find('input').click(onTopicClick);
                             }
                         }
-                    });
+                    } else {
+                        $('#dd-topic').find('li').remove();
+                        for (var i = 0; i < $this.tags.length; i++) {
+                            //console.log('e');
+                            var lis = new Element();
+                            $('#dd-topic').append(lis.li);
+                            $('#dd-topic>li').eq(i).append(lis.checkbox.attr('id', $this.tags[i]));
+                            $('#' + $this.tags[i]).attr('checked', true);
+                            $('#dd-topic>li').eq(i).append(lis.label.attr('for', $this.tags[i]));
+                            $('#dd-topic>li').eq(i).find('label').text($this.tags[i]);
+                            $('#dd-topic>li').eq(i).find('input').click(onTopicClick);
+                        }
 
-                    $('#timespan').click(function() {
-                        $('#dd-timespan').toggle();
-                        $('#dd-timespan>li').click(function() {
-                            var timespan = $(this).text();
-                            $('#timespan').text(timespan);
-
-                        });
-                    });
+                    }
                     //DRAW PIE CHART AND LINE CHART
                     var linePainter = new DataPainter();
                     linePainter.paintLineChart(tags, lineChartData);
@@ -140,7 +144,7 @@ function GeoJson(data) {
     for (var i = 0; i < data.length; i++) {
         // t= the num of each tweet within one topic
 
-        for (var t = 0; t < limit; t++) {
+        for (var t = 0; t < data[i].tweets.length; t++) {
             var node = {};
             node.type = 'Feature';
             node.geometry = {
@@ -165,30 +169,8 @@ function GeoJson(data) {
 function DataGenerate() {}
 
 DataGenerate.prototype = {
-    getLineChartData: function(tags, points) { //data = data.tags.
-        var value = [{
-            x: 1,
-            y: 15
-        }, {
-            x: 2,
-            y: 23
-        }, {
-            x: 3,
-            y: 37
-        }, {
-            x: 4,
-            y: 49
-        }, {
-            x: 5,
-            y: 52
-        }, {
-            x: 6,
-            y: 67
-        }, {
-            x: 7,
-            y: 32
-        }];
-
+    getLineChartData: function(tags, points) {
+        //data = data.tags.
         var result = [];
         for (var i = 0; i < tags.length; i++) {
             result.push({
@@ -198,12 +180,6 @@ DataGenerate.prototype = {
             });
         }
         return result;
-        // [{
-        //     values: value,
-        //     key: '#Pitt',
-        //     color: '#2ca02c'
-        // }];
-
     },
 
     getPieChartData: function(data) {
@@ -296,7 +272,7 @@ $(document).ready(function() {
         paginationSpeed: 400,
         singleItem: true
     }); //Get data and display the line chart
-
+    console.log('reload');
     setTimeout(loadMenu, 2000);
 });
 
@@ -320,6 +296,8 @@ function quo(str) {
     return str;
 }
 
+function refreshTopicMenu() {}
+
 function loadMenu() {
     $('#neighborhood').click(function() {
         $('#dd-neighborhood').toggle();
@@ -337,9 +315,29 @@ function loadMenu() {
 
             }
             neighborhood = neighborhood.slice(0, neighborhood.length - 1);
-            console.log(neighborhood, time);
             mapLoader.addNode(time, neighborhood);
-            setTimeout(loadMenu, 2000);
+        });
+    });
+
+    $('#timespan').click(function() {
+        $('#dd-timespan').toggle();
+        $('#dd-timespan>li').click(function() {
+            var time = $(this).text();
+            $('#timespan').text(time);
+            var neighborhood = '';
+            for (var i = 0; i < $('#dd-neighborhood>li').length; i++) {
+                if ($('#dd-neighborhood>li>input').eq(i).prop('checked')) {
+                    neighborhood += '\'' + $('#dd-neighborhood>li>label').eq(i).text() + '\',';
+                }
+
+                if (time == '24 hours') {
+                    time = 'day';
+                }
+
+            }
+            neighborhood = neighborhood.slice(0, neighborhood.length - 1);
+            mapLoader.addNode(time, neighborhood);
+
         });
     });
 }
