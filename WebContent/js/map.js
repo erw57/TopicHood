@@ -58,18 +58,18 @@ var mapLoader = {
                         if (k === 0) {
                             count = 0;
                         } else {
-                            count += tags[k - 1];
+                            count += data.data[k - 1].tweets.length;
                         }
-
+                        console.log(data.data[k].tweets.length);
                         for (var x = 0; x < data.data[k].tweets.length; x++) {
                             var mapDot = $('.leaflet-marker-pane').find('img')[x + count];
-
+                            console.log('T');
                             if (mapDot && !mapDot.classList.contains(tags[k])) {
-                                //console.log(x, count, x + count);
+                                console.log(tags[k]);
                                 mapDot.classList.add(tags[k]);
 
                             } else {
-                                //console.log('F', x, count, k + count);
+                                console.log('F', x, count, k + count);
                             }
 
                         }
