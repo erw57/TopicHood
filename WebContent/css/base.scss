@@ -58,23 +58,32 @@ span {
     cursor: default;
 }
 
-#topic {}
+#topic {
+    font-weight: 700;
+    color: $blue;
+}
 
 #topic:hover {
     border-bottom: solid 10px $orange;
     padding-bottom: 16px;
 }
 
-#timespan {}
+#timespan {
+    font-weight: 700;
+    color: $blue;
+}
 
 #timespan:hover {
     border-bottom: solid 10px $orange;
     padding-bottom: 16px;
 }
 
-#area {}
+#neighborhood {
+    font-weight: 700;
+    color: $blue;
+}
 
-#area:hover {
+#neighborhood:hover {
     border-bottom: solid 10px $orange;
     padding-bottom: 16px;
 }
@@ -83,30 +92,35 @@ span {
 #menu {
     z-index: 3;
     position: absolute;
+    align-items: baseline;
+    margin-top: -30px;
     ul {
         display: none;
     }
     #dd-topic {
-        width: 100px;
+        position: absolute;
+        width: 150px;
         padding: 0px 5px;
         margin-left: 410px;
-        margin-top: -20px;
         list-style-type: none;
         background-color: rgba(255, 255, 255, 0.75);
     }
     #dd-timespan {
-        width: 100px;
+        position: absolute;
+        width: 105px;
         padding: 0px 5px;
-        margin-left: 550px;
-        margin-top: -20px;
+        margin-left: 694px;
         list-style-type: none;
         background-color: rgba(255, 255, 255, 0.75);
+        li {
+            cursor: pointer;
+        }
     }
     #dd-neighborhood {
-        width: 100px;
+        position: absolute;
+        width: 140px;
         padding: 0px 5px;
-        margin-left: 690px;
-        margin-top: -20px;
+        margin-left: 925px;
         list-style-type: none;
         background-color: rgba(255, 255, 255, 0.75);
     }

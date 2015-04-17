@@ -19,37 +19,39 @@ var mapLoader = {
         this.myMap.setView([40.443, -79.988], 13);
         return this;
     },
-    addNode: function() {
+    addNode: function(time, neighborhood) {
+        var loader = this;
+        if (!time && !neighborhood) {
+            time = 'week';
+            neighborhood = quo('Downtown');
+        }
         var $this = this; // =>mapLoader
         $.ajax({
             url: 'http://localhost:8080/TopicHood/GetTopicTweets',
             type: 'POST',
             data: {
-                time: 'day',
-                neighborhood: '\'Downtown\''
+                time: time,
+                neighborhood: neighborhood
             },
             success: function(data) {
                     var tags = [];
                     var pieChartData = [];
+                    var lineChartData = [];
                     for (var q = 0; q < 5; q++) {
                         tags.push(data.tags[q].name);
-                        var text = $('#topic').text();
-                        if (q > 0) {
-                            $('#topic').text(text + ' and ' + tags[q]);
-                        } else {
-                            $('#topic').text(tags[q]);
-                        }
                         pieChartData.push([data.tags[q].name, data.tags[q].proportion]);
+                        lineChartData.push(data.tags[q].points);
                         if (q === 0) {
                             limit = data.data[q].tweets.length;
                         } else {
                             limit = (data.data[q].tweets.length < limit ? data.data[q].tweets.length : limit);
                         }
                     }
+                    console.log(limit);
                     //Convert local variable to function's variable
                     $this.tags = tags;
-                    window.tags = tags;
                     $this.myMap.featureLayer.setGeoJSON(GeoJson(data.data));
+
                     var count = 0;
 
                     // Add class tags[k] to No.count <img>
@@ -111,12 +113,15 @@ var mapLoader = {
 
                     $('#timespan').click(function() {
                         $('#dd-timespan').toggle();
+                        $('#dd-timespan>li').click(function() {
+                            var timespan = $(this).text();
+                            $('#timespan').text(timespan);
+
+                        });
                     });
-
-
                     //DRAW PIE CHART AND LINE CHART
                     var linePainter = new DataPainter();
-                    linePainter.paintLineChart();
+                    linePainter.paintLineChart(tags, lineChartData);
                     linePainter.paintPieChart(pieChartData);
                 } // end recall
         }); //end ajax
@@ -153,15 +158,14 @@ function GeoJson(data) {
         }
         // We have add nodes of one topic to the map.
     }
-    //console.log(limit);
-    console.log(nodes.length);
+    console.log(nodes);
     return nodes;
 }
 
 function DataGenerate() {}
 
 DataGenerate.prototype = {
-    getLineChartData: function() {
+    getLineChartData: function(tags, points) { //data = data.tags.
         var value = [{
             x: 1,
             y: 15
@@ -184,11 +188,21 @@ DataGenerate.prototype = {
             x: 7,
             y: 32
         }];
-        return [{
-            values: value,
-            key: '#Pitt',
-            color: '#2ca02c'
-        }];
+
+        var result = [];
+        for (var i = 0; i < tags.length; i++) {
+            result.push({
+                values: points[i],
+                key: tags[i],
+                color: colorSet[i]
+            });
+        }
+        return result;
+        // [{
+        //     values: value,
+        //     key: '#Pitt',
+        //     color: '#2ca02c'
+        // }];
 
     },
 
@@ -210,7 +224,7 @@ function DataPainter() {
 
 }
 DataPainter.prototype = {
-    paintLineChart: function(data) {
+    paintLineChart: function(tags, points) {
         nv.addGraph(function() {
             //console.log('Painting the line chart');
             var chart = nv.models.lineChart()
@@ -230,7 +244,7 @@ DataPainter.prototype = {
                 .tickFormat(d3.format('d'));
 
             var ge = new DataGenerate();
-            var lineChartData = ge.getLineChartData();
+            var lineChartData = ge.getLineChartData(tags, points);
             d3.select('#chart-line svg') //Select the <svg> element you want to render the chart in.
                 .datum(lineChartData) //Populate the <svg> element with chart data...
                 .call(chart);
@@ -273,6 +287,8 @@ $(document).ready(function() {
     // use mapLoader.addNode() to refresh the view;
     L.mapbox.accessToken = 'pk.eyJ1IjoibGlhb2thaWVuIiwiYSI6IkNVSndxVlUifQ.7LsEhdgYXzlK4MH_U_6c0w';
     mapLoader.onTokenAccessReady().addNode().loadTopic();
+
+
     //Load Carousel
     $('#chart').owlCarousel({
         //navigation : true, // Show next and prev buttons
@@ -280,44 +296,50 @@ $(document).ready(function() {
         paginationSpeed: 400,
         singleItem: true
     }); //Get data and display the line chart
+
+    setTimeout(loadMenu, 2000);
 });
 
 
 function onTopicClick() {
     var isChecked = $(this).prop('checked');
     var c = 0;
-    var text, tagName;
     if ($(this).prop('checked') === false) {
-        tagName = $(this).attr('id');
-        text = $('#topic').text();
-        if (tagName == tags[0]) {
-            $('#topic').text(text.replace(tagName, ''));
-        } else {
-            $('#topic').text(text.replace('and ' + tagName, ''));
-        }
-
         $('.' + $(this).attr('id')).each(function() {
             $(this).hide();
-
         });
     } else {
-
-        text = $('#topic').text();
-        tagName = $(this).attr('id');
-        if (text.length > 0 && text.length < 10) {
-            $('#topic').text(text + ' and ' + tagName);
-        } else {
-            if (text.length > 0 && !isOverflow) {
-                $('#topic').text(text + '...');
-                isOverflow = true;
-            }
-
-        }
-
+        $('.' + $(this).attr('id')).each(function() {
+            $(this).show();
+        });
     }
+}
 
-    $('.' + $(this).attr('id')).each(function() {
-        $(this).show();
+function quo(str) {
+    str = '\'' + str + '\'';
+    return str;
+}
+
+function loadMenu() {
+    $('#neighborhood').click(function() {
+        $('#dd-neighborhood').toggle();
+        $('#dd-neighborhood>li').click(function() {
+            var time = $('#timespan').text();
+            var neighborhood = '';
+            for (var i = 0; i < $('#dd-neighborhood>li').length; i++) {
+                if ($('#dd-neighborhood>li>input').eq(i).prop('checked')) {
+                    neighborhood += '\'' + $('#dd-neighborhood>li>label').eq(i).text() + '\',';
+                }
+
+                if (time == '24 hours') {
+                    time = 'day';
+                }
+
+            }
+            neighborhood = neighborhood.slice(0, neighborhood.length - 1);
+            console.log(neighborhood, time);
+            mapLoader.addNode(time, neighborhood);
+            setTimeout(loadMenu, 2000);
+        });
     });
-
 }
