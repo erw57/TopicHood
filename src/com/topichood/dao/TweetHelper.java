@@ -12,6 +12,7 @@ import java.util.List;
 import com.topichood.dbc.Dbcon;
 import com.topichood.vo.Point;
 import com.topichood.vo.Tweet;
+import com.topichood.vo.TweetContent;
 
 public class TweetHelper {
 	private Dbcon dbc=new Dbcon();
@@ -76,6 +77,21 @@ public class TweetHelper {
 			points.add(point);
 		}
     	return points;
+    }
+    
+    public TweetContent getTweetById(String id) throws SQLException{
+    	TweetContent t = new TweetContent();
+    	st = conn.createStatement();
+    	String sql = "select * from tweets where tweet_id = "+id;
+    	rs = st.executeQuery(sql);
+    	if(rs.next()){
+    		t.setId(rs.getString("tweet_id"));
+    		t.setAuthor(rs.getString("screen_name"));
+    		t.setText(rs.getString("tweet_text"));
+    		t.setImgUrl(rs.getString("profile_image_url"));
+    		t.setCreatedAt(rs.getTimestamp("created_at"));
+    	}
+    	return t;
     }
     
     public void closeConn(){
