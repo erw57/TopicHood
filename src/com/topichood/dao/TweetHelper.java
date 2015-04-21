@@ -94,6 +94,17 @@ public class TweetHelper {
     	return t;
     }
     
+    public List<String> getNeighborList() throws SQLException{
+    	List<String> neighbors = new ArrayList<String>();
+    	String sql = "select count(neighborhood), neighborhood from tweets where neighborhood is not null group by neighborhood order by count(neighborhood) desc";
+    	st = conn.createStatement();
+    	rs = st.executeQuery(sql);
+    	while(rs.next()){
+    		neighbors.add(rs.getString("neighborhood"));
+    	}
+    	return neighbors;
+    }
+    
     public void closeConn(){
     	try {
 			rs.close();
