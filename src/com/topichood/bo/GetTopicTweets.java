@@ -21,11 +21,7 @@ import com.topichood.dao.TweetHelper;
 import com.topichood.vo.Point;
 import com.topichood.vo.Topic;
 import com.topichood.vo.Tweet;
-/*
- * select g.tag,count(g.tag) from tweets t, tweet_tags g, tweet_tags_r r where r.tweet_id = t.tweet_id and r.`tag_id` = g.`id` group by g.tag order by count(tweet_text) DESC;
 
-select * from tweets t, tweet_tags g, tweet_tags_r r where r.tweet_id = t.tweet_id and r.`tag_id` = g.`id` and g.tag = 'Pittsburgh';
- * */
 /**
  * Servlet implementation class GetTopicTweets
  */
@@ -60,15 +56,15 @@ public class GetTopicTweets extends HttpServlet {
 		String timeStr = "";
 		int unit;
 		if(timeSpan == null){
-			timeStr = "2015-01-05 0:0:0";
+			timeStr = "2015-01-08 0:0:0";
 			unit = 60*60*1000; //one hour
 		}
 		else if(timeSpan.equals("day")){
-			timeStr = "2015-01-05 0:0:0";
+			timeStr = "2015-01-08 0:0:0";
 			unit = 60*60*1000;  //one hour
 		}
 		else if(timeSpan.equals("week")){
-			timeStr = "2015-01-01 0:0:0";
+			timeStr = "2015-01-02 0:0:0";
 			unit = 60*60*24*1000;  //one day
 		}
 		else{//month
@@ -81,7 +77,7 @@ public class GetTopicTweets extends HttpServlet {
 		from = Timestamp.valueOf(timeStr);
 		
 		Timestamp to = new Timestamp(System.currentTimeMillis());
-		to = Timestamp.valueOf("2015-01-06 0:0:0");
+		to = Timestamp.valueOf("2015-01-09 0:0:0");
 		
 //		String s = "2015-02-01 0:0:0";
 //		String e = "2015-01-3 0:0:0";

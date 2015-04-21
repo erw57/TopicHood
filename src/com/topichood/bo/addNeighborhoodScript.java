@@ -16,7 +16,7 @@ import com.topichood.dbc.Dbcon;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-public class addNeighborhoodScript {
+public class AddNeighborhoodScript {
 
 	public static void main(String[] args) {
 //        String url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=40.4297662949258,-79.9763488769531&sensor=true";
@@ -51,6 +51,9 @@ public class addNeighborhoodScript {
 	            String name =((JSONArray) obj.get("results")).getJSONObject(0).getJSONArray("address_components").getJSONObject(2).getString("short_name");
 	            System.out.println(name);
 	            if(name.equals("O'Hara") || name.equals("O'Hara St") || name.equals("Washington's Landing")){
+	            	st2 = conn.createStatement();
+		    		String sql2 = "delete from tweets where tweet_id = '"+rs.getString("tweet_id")+"'";
+		            st2.executeUpdate(sql2);
 	            	continue;
 	            }
 	    		st2 = conn.createStatement();

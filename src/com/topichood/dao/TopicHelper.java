@@ -43,6 +43,21 @@ public class TopicHelper {
     	return topics;
     }
     
+    public List<Topic> getTopicList() throws SQLException{
+    	List<Topic> tlist = new ArrayList<Topic>();
+    	String sql = "select g.id, g.tag,count(g.tag) from tweets t, tweet_tags g, tweet_tags_r r where r.tweet_id = t.tweet_id and r.`tag_id` = g.`id` group by g.tag order by count(g.tag) desc";
+    	st = conn.createStatement();
+    	rs = st.executeQuery(sql);
+    	while(rs.next()){
+    		if(rs.getInt("count(g.tag)") < 90){
+    			continue;
+    		}
+    		Topic t = new Topic(rs.getInt("g.id"),rs.getString("g.tag"),rs.getInt("count(g.tag)"));
+    		tlist.add(t);
+    	}
+    	return tlist;
+    }
+    
     public void closeConn(){
     	try {
 			//rs.close();
