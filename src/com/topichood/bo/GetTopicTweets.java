@@ -3,6 +3,7 @@ package com.topichood.bo;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class GetTopicTweets extends HttpServlet {
 //		JSONArray neighborsjo = jo.getJSONArray("neighbors");
 		String timeSpan = request.getParameter("time");
 		String neighbors = request.getParameter("neighborhood");
+		String topics = request.getParameter("topics");
 		//get neighborhoods list
 		if(neighbors == null){
 			neighbors = "'Downtown'";
@@ -124,9 +126,15 @@ public class GetTopicTweets extends HttpServlet {
 			o.element("tweets", tweets);
 			data.add(o);
 		}
+		List<String> nodes = new ArrayList<String>();
+		for(int i=0; i<tags.size(); i++){
+			nodes.add(tags.getJSONObject(i).getString("name"));
+		}
+		
+		
 		//close db connection
-		//topichelper.closeConn();
-		//tweethelper.closeConn();
+		topichelper.closeConn();
+		tweethelper.closeConn();
 		
 		backEndData.element("tags", tags);
 		backEndData.element("data", data);

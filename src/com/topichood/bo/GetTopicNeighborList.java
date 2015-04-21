@@ -2,6 +2,7 @@ package com.topichood.bo;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -36,11 +37,18 @@ public class GetTopicNeighborList extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Timestamp from = new Timestamp(System.currentTimeMillis());
+		from = Timestamp.valueOf("2015-01-08 0:0:0");
+		
+		Timestamp to = new Timestamp(System.currentTimeMillis());
+		to = Timestamp.valueOf("2015-01-09 0:0:0");
+		
+		
 		JSONObject object = new JSONObject();
 		TopicHelper topichelper = new TopicHelper();
 		TweetHelper tweethelper = new TweetHelper();
 		try {
-			List<Topic> tlist = topichelper.getTopicList();
+			List<Topic> tlist = topichelper.getTopicList(from,to);
 			JSONArray tArray = JSONArray.fromObject(tlist);
 			List<String> neighbors = tweethelper.getNeighborList();
 			object.element("topicList", tArray);
