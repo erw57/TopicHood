@@ -1,5 +1,4 @@
 var colorSet = ['#145694', '#9EB9E4', '#FF6A00', '#FAAA5E', '#22931A'];
-var limit = 0;
 var isOverflow = false;
 var isInit = false;
 // Element will be initialized to insert element into page;
@@ -88,7 +87,7 @@ var mapLoader = {
                                 img.remove();
 
                             }
-                        }, 350);
+                        }, 1000);
                     });
                     //Load dropdown menus
                     if (!isInit) {
@@ -100,7 +99,7 @@ var mapLoader = {
                         if ($('#dd-topic').find('li').length === 0) {
                             for (var i = 0; i < $this.tags.length; i++) {
                                 //console.log('e');
-                                var lis = new Element();
+                                lis = new Element();
                                 $('#dd-topic').append(lis.li);
                                 $('#dd-topic>li').eq(i).append(lis.checkbox.attr('id', $this.tags[i]));
                                 $('#' + $this.tags[i]).attr('checked', true);
@@ -254,6 +253,9 @@ DataPainter.prototype = {
 
             return chart;
         });
+    },
+    paintNetwork: function(data) {
+        var container = document.getElementById('');
     }
 };
 

@@ -144,9 +144,14 @@ aside {
 .owl-item {
     section {
         width: 95%;
-        height: 280px;
+        height: 360px;
         border: dashed lemonchiffon 1px;
         margin: 30px auto;
+        p {
+            text-align: center;
+            font-weight: 700;
+            font-family: 'Lobster', serif;
+        }
     }
 }
 
