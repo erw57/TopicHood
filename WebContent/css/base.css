@@ -42,12 +42,12 @@ nav {
   position: absolute;
   top: 50%;
   left: 50%;
-  z-index: 999; }
+  z-index: 1037; }
 
 .mask {
   display: none;
   background: black;
-  z-index: 998;
+  z-index: 1036;
   opacity: 0.5;
   position: absolute; }
 
