@@ -11,7 +11,11 @@ function Element() {
 
 var mapLoader = {
     onTokenAccessReady: function() {
+        var southWest = L.latLng(39.329, -81.130),
+            northEast = L.latLng(41.519, -78.825),
+            bounds = L.latLngBounds(southWest, northEast);
         this.myMap = L.mapbox.map('map', 'liaokaien.lm91lne2', {
+            maxBounds: bounds,
             maxZoom: 19,
             minZoom: 10
         });
@@ -29,6 +33,9 @@ var mapLoader = {
             neighborhood += neighbors[i];
         }
         neighborhood = neighborhood.slice(0, neighborhood.length - 1);
+        console.log(neighborhood);
+        neighborhood = neighborhood.replace(/\+/g, ' ');
+        console.log(neighborhood);
         var time = '';
         if (!time) {
             time = 'day';
@@ -45,7 +52,7 @@ var mapLoader = {
                     var tags = [];
                     var pieChartData = [];
                     var lineChartData = [];
-                    for (var q = 0; q < 5; q++) {
+                    for (var q = 0; q < data.tags.length; q++) {
                         tags.push(data.tags[q].name);
                         pieChartData.push([data.tags[q].name, data.tags[q].proportion]);
                         lineChartData.push(data.tags[q].points);
@@ -148,23 +155,6 @@ var mapLoader = {
     }
 };
 
-function sendRequest() {
-    var topics = $('.topiclist').val();
-    var neighbors = $('.neighborlist').val();
-    $.ajax({
-        url: '',
-        data: {
-            'topics': topics + '',
-            'neighborhood': neighbors + ''
-        },
-        type: 'GET',
-        dataType: 'json',
-        success: function() {
-
-        }
-    });
-}
-
 function GeoJson(data) {
     nodes = [];
     // i = topic number
@@ -218,6 +208,13 @@ DataGenerate.prototype = {
             result.push(new Value(data[i][0], data[i][1]));
         }
         return result;
+    },
+    getNetworkData: function(nodes, edges) {
+        var data = {
+            nodes: nodes,
+            edges: edges,
+        };
+        return data;
     }
 };
 
@@ -282,7 +279,12 @@ DataPainter.prototype = {
         });
     },
     paintNetwork: function(data) {
-        var container = document.getElementById('');
+        var container = document.getElementById('chart-network');
+        var options = {
+            width: '200px',
+            height: '300px'
+        };
+
     }
 };
 
