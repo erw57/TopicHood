@@ -27,13 +27,13 @@ body {
 
 nav {
     background-color: #757575;
-    min-height: 70px;
+    min-height: 60px;
     margin: -10px 0px 0px -10px;
     padding-top: 10px;
     padding-left: 20px;
     color: #ECECEC;
     font-family:"Lucida Grande","Helvetica Neue","Helvetica","Arial","Verdana","sans-serif";
-    font-size: 1.2em;
+    font-size: 1.0em;
     //border-bottom: solid $orange 5px;
     box-shadow: 3px 3px #999;
     display: flex;
@@ -55,12 +55,14 @@ nav {
 }
 
 .selectBox{
-	border: 1px solid rgb(221, 221, 221);
-	background: none repeat scroll 0% 0% transparent;
-	border-radius: 5px;
-	box-shadow: 0px 0px 2px rgb(218, 204, 129);
-	color: #FFF;
-	font-weight: bold;
+	  border: 1px solid #dddddd;
+	  background: none repeat scroll 0% 0% transparent;
+	  border-radius: 5px;
+	  box-shadow: 0px 0px 4px #dacc81;
+	  color: #FFF;
+	  font-weight: bold;
+	  font-size: 1.0em;
+	  height: 34px;
 }
 .selectBox:hover{
 	color:#fff;
