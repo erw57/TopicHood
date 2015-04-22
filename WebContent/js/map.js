@@ -342,7 +342,11 @@ $(document).ready(function() {
         singleItem: true
     }); //Get data and display the line chart
     console.log('reload');
-
+    //popup window
+    $('.open-popup-link').magnificPopup({
+		  type:'inline',
+		  midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
+	});
 
 });
 
