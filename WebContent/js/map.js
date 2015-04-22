@@ -61,17 +61,17 @@ var mapLoader = {
                     }
                     var i;
                     // data.related.nodes
-                    for (i = 0; i < 10; i++) {
+                    for (i = 0; i < data.related.nodes.length; i++) {
                         nodes.push({
                             id: i,
                             label: data.related.nodes[i]
                         });
                     }
 
-                    for (i = 0; i < 25; i++) {
+                    for (i = 0; i < data.related.relations.length; i++) {
                         edges.push({
-                            from: data.related.relations[i].from,
-                            to: data.related.relations[i].to,
+                            from: findIndex(nodes, data.related.relations[i].from),
+                            to: findIndex(nodes, data.related.relations[i].to),
                             value: data.related.relations[i].value
                         });
                     }
@@ -153,7 +153,7 @@ var mapLoader = {
                 $('.topiclist').append(s);
                 $('.topiclist').attr('data-live-search', 'true');
                 $('.topiclist').selectpicker({
-                	style: 'selectBox',
+                    style: 'selectBox',
                     size: 10
                 });
                 //console.log($('.topicList'));
@@ -164,14 +164,14 @@ var mapLoader = {
                 $('.neighborlist').append(t);
                 $('.neighborlist').attr('data-live-search', 'true');
                 $('.neighborlist').selectpicker({
-                	style: 'selectBox',
+                    style: 'selectBox',
                     size: 10
                 });
                 $(document).on('change', '.neighborlist', function() {
                     $this.addNode();
                 });
                 $('.timelist').selectpicker({
-                	style: 'selectBox',
+                    style: 'selectBox',
                     size: 10
                 });
                 $(document).on('change', '.timelist', function() {
@@ -357,4 +357,12 @@ function onTopicClick() {
 function quo(str) {
     str = '\'' + str + '\'';
     return str;
+}
+
+function findIndex(obj, str) {
+    for (var i = 0; i < obj.length; i++) {
+        if (str === obj[i].label)
+            return obj[i].id;
+    }
+    return -1;
 }
