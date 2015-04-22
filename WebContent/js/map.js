@@ -1,4 +1,4 @@
-var colorSet = ['#145694', '#9EB9E4', '#FF6A00', '#FAAA5E', '#22931A'];
+var colorSet = ['#145694', '#9EB9E4', '#FF6A00', '#FAAA5E', '#22931A', '#82D571', '#C4111B', '#F47E7F', '#7D4BAC', '#B198C4'];
 var isOverflow = false;
 var isInit = false;
 // Element will be initialized to insert element into page;
@@ -36,7 +36,7 @@ var mapLoader = {
         console.log(neighborhood);
         neighborhood = neighborhood.replace(/\+/g, ' ');
         console.log(neighborhood);
-        var time = '';
+        var time = $('.timelist').val() + '';
         if (!time) {
             time = 'day';
         }
@@ -46,7 +46,8 @@ var mapLoader = {
             type: 'POST',
             data: {
                 'topics': topics,
-                'neighborhood': neighborhood
+                'neighborhood': neighborhood,
+                'time': time
             },
             success: function(data) {
                     var tags = [];
@@ -64,7 +65,12 @@ var mapLoader = {
                     for (i = 0; i < data.related.nodes.length; i++) {
                         nodes.push({
                             id: i,
-                            label: data.related.nodes[i]
+                            label: data.related.nodes[i],
+                            color: {
+                                background: colorSet[i],
+                                border: colorSet[i],
+                            },
+                            fontColor: 'white'
                         });
                     }
 
