@@ -54,6 +54,18 @@ nav {
 	color: #FBF692;
 }
 
+.selectBox{
+	border: 1px solid rgb(221, 221, 221);
+	background: none repeat scroll 0% 0% transparent;
+	border-radius: 5px;
+	box-shadow: 0px 0px 2px rgb(218, 204, 129);
+	color: #FFF;
+	font-weight: bold;
+}
+.selectBox:hover{
+	color:#fff;
+}
+
 aside {
     height: 80%;
     #chart {

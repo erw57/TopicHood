@@ -131,7 +131,7 @@ var mapLoader = {
             success: function(data) {
                 var s = '';
                 for (var i = 0; i < data.topicList.length; i++) {
-                    if (i < 5) {
+                    if (i < 4) {
                         s += '<option value="' + data.topicList[i].id + '" selected>';
                         s += data.topicList[i].name + '</option>';
                     } else {
@@ -141,7 +141,7 @@ var mapLoader = {
                 }
                 var t = '';
                 for (i = 0; i < data.neighborList.length; i++) {
-                    if (i < 5) {
+                    if (i < 3) {
                         t += '<option value="' + data.neighborList[i] + '" selected>';
                         t += data.neighborList[i] + '</option>';
                     } else {
@@ -152,7 +152,10 @@ var mapLoader = {
                 //Load topic list
                 $('.topiclist').append(s);
                 $('.topiclist').attr('data-live-search', 'true');
-                $('.topiclist').selectpicker('selectAll');
+                $('.topiclist').selectpicker({
+                	style: 'selectBox',
+                    size: 10
+                });
                 //console.log($('.topicList'));
                 $(document).on('change', '.topiclist', function() {
                     $this.addNode();
@@ -160,11 +163,17 @@ var mapLoader = {
                 //load neighborlist
                 $('.neighborlist').append(t);
                 $('.neighborlist').attr('data-live-search', 'true');
-                $('.neighborlist').selectpicker();
+                $('.neighborlist').selectpicker({
+                	style: 'selectBox',
+                    size: 10
+                });
                 $(document).on('change', '.neighborlist', function() {
                     $this.addNode();
                 });
-                $('.timelist').selectpicker();
+                $('.timelist').selectpicker({
+                	style: 'selectBox',
+                    size: 10
+                });
                 $(document).on('change', '.timelist', function() {
                     $this.addNode();
                 });

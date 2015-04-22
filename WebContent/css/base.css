@@ -1,2 +1,76 @@
-html,body{height:100%}nav{background-color:#757575;min-height:70px;margin:-10px 0px 0px -10px;padding-top:10px;padding-left:20px;color:#fff;font-family:"Lucida Grande","Helvetica Neue","Helvetica","Arial","Verdana","sans-serif";font-size:1.2em;box-shadow:3px 3px #999;display:flex;align-items:center}nav p{margin-top:10px;margin-left:20px;margin-right:20px}.title{text-shadow:2px 2px #ff0000;font-size:2em;text-shadow:2px 2px #505050;font-size:1.5em;width:142px;color:#FBF692}aside{height:80%}aside #chart{background-color:rgba(255,255,255,0.75);border-radius:5px;box-shadow:1px 1px 5px rgba(103,103,103,0.85);height:480px;left:48px;max-width:400px;position:relative;top:48px;z-index:2}.owl-item section{width:95%;height:360px;margin:30px auto}.owl-item section p{text-align:center;font-weight:700}#map{height:94%;overflow:hidden}.nv-axisMaxMin{color:#ffffff}.marker-description{width:400px;text-align:center}.marker-description div{height:120px;width:300px}
+html,
+body {
+  height: 100%; }
+
+nav {
+  background-color: #757575;
+  min-height: 70px;
+  margin: -10px 0px 0px -10px;
+  padding-top: 10px;
+  padding-left: 20px;
+  color: #fff;
+  font-family: "Lucida Grande","Helvetica Neue","Helvetica","Arial","Verdana","sans-serif";
+  font-size: 1.2em;
+  box-shadow: 3px 3px #999;
+  display: flex;
+  align-items: center; }
+  nav p {
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px; }
+
+.title {
+  text-shadow: 2px 2px #ff0000;
+  font-size: 2em;
+  text-shadow: 2px 2px #505050;
+  font-size: 1.5em;
+  width: 142px;
+  color: #FBF692; }
+
+.selectBox {
+  border: 1px solid #dddddd;
+  background: none repeat scroll 0% 0% transparent;
+  border-radius: 5px;
+  box-shadow: 0px 0px 2px #dacc81;
+  color: #FFF;
+  font-weight: bold; }
+
+.selectBox:hover {
+  color: #fff; }
+
+aside {
+  height: 80%; }
+  aside #chart {
+    background-color: rgba(255, 255, 255, 0.75);
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px rgba(103, 103, 103, 0.85);
+    height: 480px;
+    left: 48px;
+    max-width: 400px;
+    position: relative;
+    top: 48px;
+    z-index: 2; }
+
+.owl-item section {
+  width: 95%;
+  height: 360px;
+  margin: 30px auto; }
+  .owl-item section p {
+    text-align: center;
+    font-weight: 700; }
+
+#map {
+  height: 94%;
+  overflow: hidden; }
+
+.nv-axisMaxMin {
+  color: #ffffff; }
+
+.marker-description {
+  width: 400px;
+  text-align: center; }
+  .marker-description div {
+    height: 120px;
+    width: 300px; }
+
 /*# sourceMappingURL=base.css.map */
