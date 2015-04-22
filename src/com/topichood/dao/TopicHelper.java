@@ -87,7 +87,7 @@ public class TopicHelper {
 			String sql = "select tag2 from related_tags where tag1 = '"+tagId+"' and times > 500";
 			rs = st.executeQuery(sql);
 			while(rs.next()){
-				list.add(rs.getString("g.tag"));
+				list.add(rs.getString("tag2"));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
