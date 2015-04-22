@@ -366,3 +366,14 @@ function findIndex(obj, str) {
     }
     return -1;
 }
+
+function showLoading(){
+	var height = $(document).height();
+	var width = $(document).width();
+	$('.mask').css('height', height);
+	$('.mask').css('width', width);
+	$('.mask').show();
+}
+function hideLoading(){
+	$('.mask').hide();
+}

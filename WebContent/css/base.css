@@ -45,10 +45,11 @@ nav {
   z-index: 999; }
 
 .mask {
+  display: none;
   background: black;
-  height: 100000px;
-  width: 100000px;
-  z-index: 998; }
+  z-index: 998;
+  opacity: 0.5;
+  position: absolute; }
 
 aside {
   height: 80%; }

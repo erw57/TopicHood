@@ -74,10 +74,13 @@ nav {
 }
 
 .mask{
+	display:none;
 	background:black;
-	height:100000px;
-	width:100000px;
+	//height:100000px;
+	//width:100000px;
 	z-index:998;
+	opacity: 0.5;
+	position:absolute;
 }
 
 aside {
