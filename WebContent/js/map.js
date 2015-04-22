@@ -40,7 +40,7 @@ var mapLoader = {
         if (!time) {
             time = 'day';
         }
-
+        showLoading();
         $.ajax({
             url: 'GetTopicTweets',
             type: 'POST',
@@ -120,6 +120,7 @@ var mapLoader = {
                     linePainter.paintLineChart(tags, lineChartData);
                     linePainter.paintPieChart(pieChartData);
                     linePainter.paintNetwork(nodes, edges);
+                    hideLoading();
                 } // end recall
         }); //end ajax
         return this;
@@ -367,13 +368,14 @@ function findIndex(obj, str) {
     return -1;
 }
 
-function showLoading(){
-	var height = $(document).height();
-	var width = $(document).width();
-	$('.mask').css('height', height);
-	$('.mask').css('width', width);
-	$('.mask').show();
+function showLoading() {
+    var height = $(document).height();
+    var width = $(document).width();
+    $('.mask').css('height', height);
+    $('.mask').css('width', width);
+    $('.mask').show();
 }
-function hideLoading(){
-	$('.mask').hide();
+
+function hideLoading() {
+    $('.mask').hide();
 }
