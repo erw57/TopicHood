@@ -19,7 +19,7 @@ public class TopicHelper {
     private Statement st=null;
     private ResultSet rs=null;
     
-    public List<Topic> getTopic(Timestamp from,Timestamp to, int size, String neighbors) {
+    public List<Topic> getHotTopic(Timestamp from,Timestamp to, int size, String neighbors) {
     	ArrayList<Topic> topics = new ArrayList<Topic>();
     	try {
     		st = conn.createStatement();
@@ -58,6 +58,60 @@ public class TopicHelper {
     	}
     	System.out.println(tlist.size());
     	return tlist;
+    }
+    
+    public List<Topic> getTopicById(Timestamp from,Timestamp to, String neighbors,String[] ids){
+    	List<Topic> tlist = new ArrayList<Topic>();
+    	try {
+			st = conn.createStatement();
+			for(int i=0; i<ids.length; i++){
+	    		String sql = "select g.id, g.tag,count(g.tag) from tweets t, tweet_tags g, tweet_tags_r r where t.neighborhood in ("+neighbors+")and t.created_at between '"+from+"' and '"+to+"' and g.id = '"+ids[i]+"' and r.tweet_id = t.tweet_id and r.`tag_id` = g.`id` group by g.tag";
+	    		rs = st.executeQuery(sql);
+	    		if(rs.next()){
+	    			Topic t = new Topic(rs.getInt("g.id"),rs.getString("g.tag"),rs.getInt("count(g.tag)"));
+	    			tlist.add(t);
+	    		}
+	    	}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    	return tlist;
+    }
+    
+    public List<String> getRelatedTopic(String tagId){
+    	List<String> list = new ArrayList<String>();
+    	try {
+			st = conn.createStatement();
+			String sql = "select tag2 from related_tags where tag1 = '"+tagId+"' and times > 500";
+			rs = st.executeQuery(sql);
+			while(rs.next()){
+				list.add(rs.getString("g.tag"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return list;	
+    }
+    
+    public int getRelationValue(String tag1, String tag2){
+    	int value = 0;
+    	try {
+			st = conn.createStatement();
+			String sql = "select times from related_tags where tag1 = '"+tag1+"' and tag2 = '"+tag2+"'";
+			rs = st.executeQuery(sql);
+			if(rs.next()){
+				if(rs.getInt("times") > 500){
+					value = rs.getInt("times");
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return value;
     }
     
     public void closeConn(){

@@ -2,9 +2,11 @@ package com.topichood.bo;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -49,6 +51,7 @@ public class GetTopicTweets extends HttpServlet {
 		String timeSpan = request.getParameter("time");
 		String neighbors = request.getParameter("neighborhood");
 		String topics = request.getParameter("topics");
+		String[] topicIds = topics.split(",");
 		//get neighborhoods list
 		if(neighbors == null){
 			neighbors = "'Downtown'";
@@ -93,7 +96,8 @@ public class GetTopicTweets extends HttpServlet {
 		TweetHelper tweethelper = new TweetHelper();
 		JSONArray tags = new JSONArray();
 		//get top 5 topics
-		List<Topic> topicList = topichelper.getTopic(from,to,size,neighbors);
+		//List<Topic> topicList = topichelper.getTopic(from,to,size,neighbors);
+		List<Topic> topicList = topichelper.getTopicById(from, to, neighbors, topicIds);
 		long total = 0;
 		for(Topic topic : topicList){
 			total+=topic.getVolume();
@@ -126,18 +130,57 @@ public class GetTopicTweets extends HttpServlet {
 			o.element("tweets", tweets);
 			data.add(o);
 		}
+		
+		//related graph data
 		List<String> nodes = new ArrayList<String>();
 		for(int i=0; i<tags.size(); i++){
 			nodes.add(tags.getJSONObject(i).getString("name"));
 		}
+		for(int i=0; i<tags.size(); i++){
+			List<String> relates = topichelper.getRelatedTopic(tags.getJSONObject(i).getString("id"));
+			for(int j=0; j<relates.size(); j++){
+				if(!nodes.contains(relates.get(j))){ //not add the same tag
+					nodes.add(relates.get(j));
+				}
+			}
+		}
+		JSONArray node = JSONArray.fromObject(nodes);
+		// calculate relation
+		JSONArray relation = new JSONArray();
+		for(int i=0; i< nodes.size()-1; i++){
+			for(int j=i+1; j<nodes.size(); j++){
+				int value = topichelper.getRelationValue(nodes.get(i), nodes.get(j));
+				if(value > 0){
+					JSONObject object = new JSONObject();
+					object.element("from", nodes.get(i));
+					object.element("to", nodes.get(j));
+					double k = (double) (value*1.0/10000);
+					String result;
+					if(k > 1){
+						result = "1";
+					}
+					else{
+						DecimalFormat df = new DecimalFormat("0.0");
+						result = df.format(k);
+					}
+					
+					object.element("value", result);
+					relation.add(object);
+				}
+			}
+		}
 		
 		
+		JSONObject related = new JSONObject();
+		related.element("nodes", node);
+		related.element("relations", relation);
 		//close db connection
 		topichelper.closeConn();
 		tweethelper.closeConn();
-		
+		System.out.println(related.toString());
 		backEndData.element("tags", tags);
 		backEndData.element("data", data);
+		backEndData.element("related", related);
 		response.setContentType("text/json");
 		response.setCharacterEncoding("UTF-8");
 		response.setHeader("Cache-Control", "no-cache");

@@ -12,19 +12,19 @@ import com.topichood.dbc.Dbcon;
 public class AddRelatedToppicScript {
 	
 	private static class Pair{
-		private int tag1;
-		private int tag2;
+		private String tag1;
+		private String tag2;
 		
-		public void setTag1(int tag){
+		public void setTag1(String tag){
 			this.tag1 = tag;
 		}
-		public void setTag2(int tag){
+		public void setTag2(String tag){
 			this.tag2 = tag;
 		}
-		public int getTag1(){
+		public String getTag1(){
 			return this.tag1;
 		}
-		public int getTag2(){
+		public String getTag2(){
 			return this.tag2;
 		}
 	}
@@ -44,18 +44,18 @@ public class AddRelatedToppicScript {
 			rs = st.executeQuery(sql);
 			while(rs.next()){
 				st2 = conn.createStatement();
-				String sql2 = "select tag_id from tweet_tags_r where tweet_id = "+rs.getLong("tweet_id"); //get one id
+				String sql2 = "select g.tag from tweet_tags_r r, tweet_tags g where g.id = r.tag_id and r.tweet_id = "+rs.getLong("tweet_id"); //get one id
 				rs2 = st2.executeQuery(sql2);
 				// all tags in one tweet
-				List<Integer> tagIds = new ArrayList<Integer>();
+				List<String> tagNames = new ArrayList<String>();
 				while(rs2.next()){
-					tagIds.add(rs2.getInt("tag_id"));
+					tagNames.add(rs2.getString("g.tag"));
 				}
-				if(tagIds.size()<=1){
+				if(tagNames.size()<=1){
 					continue;
 				}
 				else{
-					List<Pair> pairs = combine(tagIds); //get combinations
+					List<Pair> pairs = combine(tagNames); //get combinations
 					for(int i=0; i<pairs.size(); i++){
 						Pair p = pairs.get(i);
 						String sql3 = "insert into topichood.related_tags values('"+p.getTag1()+"','"+p.getTag2()+"',1) on duplicate key update times = times+1";
@@ -81,17 +81,17 @@ public class AddRelatedToppicScript {
 
 	}
 	
-	private static List<Pair> combine(List<Integer> tagIds){
+	private static List<Pair> combine(List<String> tagNames){
 		List<Pair> plist = new ArrayList<Pair>();
-		for(int i=0; i<tagIds.size(); i++){
-			for(int j=0; j<tagIds.size(); j++){
+		for(int i=0; i<tagNames.size(); i++){
+			for(int j=0; j<tagNames.size(); j++){
 				if(i==j){
 					continue;
 				}
 				else{
 					Pair p = new Pair();
-					p.setTag1(tagIds.get(i));
-					p.setTag2(tagIds.get(j));
+					p.setTag1(tagNames.get(i));
+					p.setTag2(tagNames.get(j));
 					plist.add(p);
 				}
 			}
