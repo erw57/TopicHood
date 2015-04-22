@@ -11,7 +11,6 @@ function Element() {
 
 var mapLoader = {
     onTokenAccessReady: function() {
-
         this.myMap = L.mapbox.map('map', 'liaokaien.lm91lne2', {
             maxZoom: 19,
             minZoom: 10
@@ -19,19 +18,28 @@ var mapLoader = {
         this.myMap.setView([40.443, -79.988], 13);
         return this;
     },
-    addNode: function(time, neighborhood) {
-        var loader = this;
-        if (!time && !neighborhood) {
-            time = 'day';
-            neighborhood = quo('Shadyside');
-        }
+    addNode: function() {
         var $this = this; // =>mapLoader
+        var topics = $('.topiclist').val() + '';
+        var neighbors = $('.neighborlist').val() + '';
+        neighbors = neighbors.split(',');
+        var neighborhood = '';
+        for (var i = 0; i < neighbors.length; i++) {
+            neighbors[i] = "'" + neighbors[i] + "',";
+            neighborhood += neighbors[i];
+        }
+        neighborhood = neighborhood.slice(0, neighborhood.length - 1);
+        var time = '';
+        if (!time) {
+            time = 'day';
+        }
+
         $.ajax({
-            url: 'http://localhost:8080/TopicHood/GetTopicTweets',
+            url: 'GetTopicTweets',
             type: 'POST',
             data: {
-                time: time,
-                neighborhood: neighborhood
+                'topics': topics,
+                'neighborhood': neighborhood
             },
             success: function(data) {
                     var tags = [];
@@ -41,15 +49,12 @@ var mapLoader = {
                         tags.push(data.tags[q].name);
                         pieChartData.push([data.tags[q].name, data.tags[q].proportion]);
                         lineChartData.push(data.tags[q].points);
-                        if (q === 0) {
-                            limit = data.data[q].tweets.length;
-                        } else {
-                            limit = (data.data[q].tweets.length < limit ? data.data[q].tweets.length : limit);
-                        }
                     }
-                    console.log(limit);
+
                     //Convert local variable to function's variable
                     $this.tags = tags;
+                    //Refresh dots
+                    console.log('success');
                     $this.myMap.featureLayer.setGeoJSON(GeoJson(data.data));
                     var count = 0;
                     // Add class tags[k] to No.count <img>
@@ -59,21 +64,16 @@ var mapLoader = {
                         } else {
                             count += data.data[k - 1].tweets.length;
                         }
-                        console.log(data.data[k].tweets.length);
                         for (var x = 0; x < data.data[k].tweets.length; x++) {
                             var mapDot = $('.leaflet-marker-pane').find('img')[x + count];
-                            console.log('T');
                             if (mapDot && !mapDot.classList.contains(tags[k])) {
-                                console.log(tags[k]);
                                 mapDot.classList.add(tags[k]);
 
-                            } else {
-                                console.log('F', x, count, k + count);
-                            }
+                            } else {}
 
                         }
-                    }
-                    console.log($('.leaflet-marker-pane').find('img').length);
+                    } // end for(){}
+                    // addEventListenr to img (dots);
                     $('.leaflet-marker-pane').find('img').click(function() {
                         var img = $(this); //Dot on map.
                         var tweetId = $('.marker-description').text();
@@ -90,38 +90,6 @@ var mapLoader = {
                         }, 1000);
                     });
                     //Load dropdown menus
-                    if (!isInit) {
-                        isInit = true;
-                        $('#topic').click(function() {
-                            $('#dd-topic').toggle();
-                        });
-
-                        if ($('#dd-topic').find('li').length === 0) {
-                            for (var i = 0; i < $this.tags.length; i++) {
-                                //console.log('e');
-                                lis = new Element();
-                                $('#dd-topic').append(lis.li);
-                                $('#dd-topic>li').eq(i).append(lis.checkbox.attr('id', $this.tags[i]));
-                                $('#' + $this.tags[i]).attr('checked', true);
-                                $('#dd-topic>li').eq(i).append(lis.label.attr('for', $this.tags[i]));
-                                $('#dd-topic>li').eq(i).find('label').text($this.tags[i]);
-                                $('#dd-topic>li').eq(i).find('input').click(onTopicClick);
-                            }
-                        }
-                    } else {
-                        $('#dd-topic').find('li').remove();
-                        for (var i = 0; i < $this.tags.length; i++) {
-                            //console.log('e');
-                            var lis = new Element();
-                            $('#dd-topic').append(lis.li);
-                            $('#dd-topic>li').eq(i).append(lis.checkbox.attr('id', $this.tags[i]));
-                            $('#' + $this.tags[i]).attr('checked', true);
-                            $('#dd-topic>li').eq(i).append(lis.label.attr('for', $this.tags[i]));
-                            $('#dd-topic>li').eq(i).find('label').text($this.tags[i]);
-                            $('#dd-topic>li').eq(i).find('input').click(onTopicClick);
-                        }
-
-                    }
                     //DRAW PIE CHART AND LINE CHART
                     var linePainter = new DataPainter();
                     linePainter.paintLineChart(tags, lineChartData);
@@ -130,12 +98,72 @@ var mapLoader = {
         }); //end ajax
         return this;
     },
-    loadTopic: function() {
+    initMenu: function() {
         $this = this;
+        $.ajax({
+            url: '/TopicHood/GetTopicNeighborList',
+            success: function(data) {
+                var s = '';
+                for (var i = 0; i < data.topicList.length; i++) {
+                    if (i < 5) {
+                        s += '<option value="' + data.topicList[i].id + '" selected>';
+                        s += data.topicList[i].name + '</option>';
+                    } else {
+                        s += '<option value="' + data.topicList[i].id + '">';
+                        s += data.topicList[i].name + '</option>';
+                    }
+                }
+                var t = '';
+                for (i = 0; i < data.neighborList.length; i++) {
+                    if (i < 5) {
+                        t += '<option value="' + data.neighborList[i] + '" selected>';
+                        t += data.neighborList[i] + '</option>';
+                    } else {
+                        t += '<option value="' + data.neighborList[i] + '">';
+                        t += data.neighborList[i] + '</option>';
+                    }
+                }
+                //Load topic list
+                $('.topiclist').append(s);
+                $('.topiclist').attr('data-live-search', 'true');
+                $('.topiclist').selectpicker('selectAll');
+                //console.log($('.topicList'));
+                $(document).on('change', '.topiclist', function() {
+                    $this.addNode();
+                });
+                //load neighborlist
+                $('.neighborlist').append(t);
+                $('.neighborlist').attr('data-live-search', 'true');
+                $('.neighborlist').selectpicker();
+                $(document).on('change', '.neighborlist', function() {
+                    $this.addNode();
+                });
+                $('.timelist').selectpicker();
+                $(document).on('change', '.timelist', function() {
+                    $this.addNode();
+                });
+                $this.addNode();
+            }
+        });
     }
 };
 
+function sendRequest() {
+    var topics = $('.topiclist').val();
+    var neighbors = $('.neighborlist').val();
+    $.ajax({
+        url: '',
+        data: {
+            'topics': topics + '',
+            'neighborhood': neighbors + ''
+        },
+        type: 'GET',
+        dataType: 'json',
+        success: function() {
 
+        }
+    });
+}
 
 function GeoJson(data) {
     nodes = [];
@@ -161,7 +189,6 @@ function GeoJson(data) {
         }
         // We have add nodes of one topic to the map.
     }
-    console.log(nodes);
     return nodes;
 }
 
@@ -264,7 +291,7 @@ $(document).ready(function() {
     // Load Map
     // use mapLoader.addNode() to refresh the view;
     L.mapbox.accessToken = 'pk.eyJ1IjoibGlhb2thaWVuIiwiYSI6IkNVSndxVlUifQ.7LsEhdgYXzlK4MH_U_6c0w';
-    mapLoader.onTokenAccessReady().addNode().loadTopic();
+    mapLoader.onTokenAccessReady().initMenu();
 
 
     //Load Carousel
@@ -275,7 +302,8 @@ $(document).ready(function() {
         singleItem: true
     }); //Get data and display the line chart
     console.log('reload');
-    setTimeout(loadMenu, 2000);
+
+
 });
 
 
@@ -296,50 +324,4 @@ function onTopicClick() {
 function quo(str) {
     str = '\'' + str + '\'';
     return str;
-}
-
-function refreshTopicMenu() {}
-
-function loadMenu() {
-    $('#neighborhood').click(function() {
-        $('#dd-neighborhood').toggle();
-        $('#dd-neighborhood>li').click(function() {
-            var time = $('#timespan').text();
-            var neighborhood = '';
-            for (var i = 0; i < $('#dd-neighborhood>li').length; i++) {
-                if ($('#dd-neighborhood>li>input').eq(i).prop('checked')) {
-                    neighborhood += '\'' + $('#dd-neighborhood>li>label').eq(i).text() + '\',';
-                }
-
-                if (time == '24 hours') {
-                    time = 'day';
-                }
-
-            }
-            neighborhood = neighborhood.slice(0, neighborhood.length - 1);
-            mapLoader.addNode(time, neighborhood);
-        });
-    });
-
-    $('#timespan').click(function() {
-        $('#dd-timespan').toggle();
-        $('#dd-timespan>li').click(function() {
-            var time = $(this).text();
-            $('#timespan').text(time);
-            var neighborhood = '';
-            for (var i = 0; i < $('#dd-neighborhood>li').length; i++) {
-                if ($('#dd-neighborhood>li>input').eq(i).prop('checked')) {
-                    neighborhood += '\'' + $('#dd-neighborhood>li>label').eq(i).text() + '\',';
-                }
-
-                if (time == '24 hours') {
-                    time = 'day';
-                }
-
-            }
-            neighborhood = neighborhood.slice(0, neighborhood.length - 1);
-            mapLoader.addNode(time, neighborhood);
-
-        });
-    });
 }

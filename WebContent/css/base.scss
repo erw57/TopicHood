@@ -35,94 +35,11 @@ nav {
     font-family: $monospace;
     font-size: 1.2em;
     border-bottom: solid $orange 5px;
-}
-
-#title {
-    margin-right: 40px;
-    font-size: 1.5em;
-    font-family: $cursive;
-    color: $orange;
-}
-
-#title:hover {
-    border-bottom: solid 10px $orange;
-    padding-bottom: 16px;
-}
-
-span {
-    cursor: pointer;
-}
-
-#count {
-    color: $blue;
-    cursor: default;
-}
-
-#topic {
-    font-weight: 700;
-    color: $blue;
-}
-
-#topic:hover {
-    border-bottom: solid 10px $orange;
-    padding-bottom: 16px;
-}
-
-#timespan {
-    font-weight: 700;
-    color: $blue;
-}
-
-#timespan:hover {
-    border-bottom: solid 10px $orange;
-    padding-bottom: 16px;
-}
-
-#neighborhood {
-    font-weight: 700;
-    color: $blue;
-}
-
-#neighborhood:hover {
-    border-bottom: solid 10px $orange;
-    padding-bottom: 16px;
-}
-
-//Style of the dropdown layer;
-#menu {
-    z-index: 3;
-    position: absolute;
-    align-items: baseline;
-    margin-top: -30px;
-    ul {
-        display: none;
-    }
-    #dd-topic {
-        position: absolute;
-        width: 150px;
-        padding: 0px 5px;
-        margin-left: 410px;
-        list-style-type: none;
-        background-color: rgba(255, 255, 255, 0.75);
-    }
-    #dd-timespan {
-        position: absolute;
-        width: 105px;
-        padding: 0px 5px;
-        margin-left: 694px;
-        list-style-type: none;
-        background-color: rgba(255, 255, 255, 0.75);
-        li {
-            cursor: pointer;
-        }
-    }
-    #dd-neighborhood {
-        position: absolute;
-        width: 140px;
-        padding: 0px 5px;
-        margin-left: 925px;
-        list-style-type: none;
-        background-color: rgba(255, 255, 255, 0.75);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    p {
+        margin-top: 10px;
     }
 }
 
@@ -132,7 +49,8 @@ aside {
         background-color: rgba(255, 255, 255, 0.75);
         border-radius: 5px;
         box-shadow: 1px 1px 5px rgba(103, 103, 103, 0.85);
-        height: 450px;
+        height: 480px
+;
         left: 48px;
         max-width: 400px;
         position: relative;
@@ -145,18 +63,16 @@ aside {
     section {
         width: 95%;
         height: 360px;
-        border: dashed lemonchiffon 1px;
         margin: 30px auto;
         p {
             text-align: center;
             font-weight: 700;
-            font-family: 'Lobster', serif;
         }
     }
 }
 
 #map {
-    height: 89%;
+    height: 94%;
     overflow: hidden;
 }
 

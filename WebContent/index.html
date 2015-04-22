@@ -11,18 +11,24 @@
     <link rel="stylesheet" href="bower_components/owl.carousel/owl-carousel/owl.carousel.css" />
     <link rel="stylesheet" href="bower_components/owl.carousel/owl-carousel/owl.theme.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-select.min.css">
     <link rel="stylesheet" href="bower_components/font-awesome-4.3.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="css/base.css" />
 </head>
 
 <body>
     <nav>
-        <select class="selectpicker" data-style="btn-inverse" data-live-search="true">
-            <option value=""></option>
-            <option value=""></option>
-            <option value=""></option>
-            <option value=""></option>
-            <option value=""></option>
+        <p><span></span>People talked about</p>
+        <select class="topiclist" multiple data-width="250px">
+        </select>
+        <p> in </p>
+        <select class="neighborlist" multiple data-width="300px">
+        </select>
+        <p> over last </p>
+        <select class="timelist" data-width="200px">
+            <option value="day">24 hours</option>
+            <option value="week">week</option>
+            <option value="month">month</option>
         </select>
     </nav>
     <div id="map">
@@ -47,7 +53,7 @@
     <script src="bower_components/d3/d3.min.js" charset="utf-8"></script>
     <script src="bower_components/d3/nv.d3.min.js" charset="utf-8"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script src="/js/bootstrap-select.js"></script>
+    <script src="js/bootstrap-select.js"></script>
     <script src="https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.js"></script>
     <!-- Load Twitter Widget-->
     <script src="js/get.js"></script>
