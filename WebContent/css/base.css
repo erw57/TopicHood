@@ -16,8 +16,8 @@ nav {
   align-items: center; }
   nav p {
     margin-top: 10px;
-    margin-left: 20px;
-    margin-right: 20px; }
+    margin-left: 10px;
+    margin-right: 10px; }
 
 .title {
   text-shadow: 2px 2px #ff0000;
@@ -42,14 +42,22 @@ nav {
   position: absolute;
   top: 50%;
   left: 50%;
-  z-index: 1037; }
+  z-index: 999; }
 
 .mask {
   display: none;
   background: black;
-  z-index: 1036;
+  z-index: 998;
   opacity: 0.5;
   position: absolute; }
+
+.helper {
+  color: #91E07E;
+  display: block;
+  float: right;
+  margin-left: 20px;
+  text-decoration: underline;
+  margin-bottom: -10px; }
 
 aside {
   height: 80%; }

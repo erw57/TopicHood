@@ -41,8 +41,8 @@ nav {
     align-items: center;
     p{
         margin-top: 10px;
-        margin-left:20px;
-        margin-right:20px;
+        margin-left:10px;
+        margin-right:10px;
     }
 }
 .title{
@@ -81,6 +81,15 @@ nav {
 	z-index:998;
 	opacity: 0.5;
 	position:absolute;
+}
+
+.helper{
+	color: #91E07E;
+	display: block;
+	float: right;
+	margin-left: 20px;
+	text-decoration: underline;
+	margin-bottom: -10px;
 }
 
 aside {
