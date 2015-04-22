@@ -26,21 +26,32 @@ body {
 }
 
 nav {
-    background-color: #ffffff;
-    min-height: 56px;
+    background-color: #757575;
+    min-height: 70px;
     margin: -10px 0px 0px -10px;
     padding-top: 10px;
     padding-left: 20px;
-    color: #193940;
-    font-family: $monospace;
+    color: #fff;
+    font-family:"Lucida Grande","Helvetica Neue","Helvetica","Arial","Verdana","sans-serif";
     font-size: 1.2em;
-    border-bottom: solid $orange 5px;
+    //border-bottom: solid $orange 5px;
+    box-shadow: 3px 3px #999;
     display: flex;
-    justify-content: space-around;
+    //justify-content: space-around;
     align-items: center;
-    p {
+    p{
         margin-top: 10px;
+        margin-left:20px;
+        margin-right:20px;
     }
+}
+.title{
+	text-shadow: 2px 2px #ff0000;
+	font-size: 2em;
+	text-shadow: 2px 2px #505050;
+	font-size: 1.5em;
+	width: 142px;
+	color: #FBF692;
 }
 
 aside {
