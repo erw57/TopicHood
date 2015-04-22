@@ -52,12 +52,30 @@ var mapLoader = {
                     var tags = [];
                     var pieChartData = [];
                     var lineChartData = [];
+                    var nodes = [];
+                    var edges = [];
                     for (var q = 0; q < data.tags.length; q++) {
                         tags.push(data.tags[q].name);
                         pieChartData.push([data.tags[q].name, data.tags[q].proportion]);
                         lineChartData.push(data.tags[q].points);
                     }
+                    var i;
+                    // data.related.nodes
+                    for (i = 0; i < 10; i++) {
+                        nodes.push({
+                            id: i,
+                            label: data.related.nodes[i]
+                        });
+                    }
 
+                    for (i = 0; i < 25; i++) {
+                        edges.push({
+                            from: data.related.relations[i].from,
+                            to: data.related.relations[i].to,
+                            value: data.related.relations[i].value
+                        });
+                    }
+                    console.log(nodes, edges);
                     //Convert local variable to function's variable
                     $this.tags = tags;
                     //Refresh dots
@@ -101,6 +119,7 @@ var mapLoader = {
                     var linePainter = new DataPainter();
                     linePainter.paintLineChart(tags, lineChartData);
                     linePainter.paintPieChart(pieChartData);
+                    linePainter.paintNetwork(nodes, edges);
                 } // end recall
         }); //end ajax
         return this;
@@ -278,12 +297,15 @@ DataPainter.prototype = {
             return chart;
         });
     },
-    paintNetwork: function(data) {
+    paintNetwork: function(nodes, edges) {
         var container = document.getElementById('chart-network');
         var options = {
-            width: '200px',
-            height: '300px'
+            width: '360px',
+            height: '380px'
         };
+        var ge = new DataGenerate();
+        var data = ge.getNetworkData(nodes, edges);
+        var network = new vis.Network(container, data, options);
 
     }
 };
