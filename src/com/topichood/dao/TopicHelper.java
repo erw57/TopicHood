@@ -84,7 +84,7 @@ public class TopicHelper {
     	List<String> list = new ArrayList<String>();
     	try {
 			st = conn.createStatement();
-			String sql = "select tag2 from related_tags where tag1 = '"+tagId+"' and times > 500";
+			String sql = "select tag2 from related_tags where tag1 = '"+tagId+"' and times > 1000";
 			rs = st.executeQuery(sql);
 			while(rs.next()){
 				list.add(rs.getString("tag2"));
@@ -103,7 +103,7 @@ public class TopicHelper {
 			String sql = "select times from related_tags where tag1 = '"+tag1+"' and tag2 = '"+tag2+"'";
 			rs = st.executeQuery(sql);
 			if(rs.next()){
-				if(rs.getInt("times") > 500){
+				if(rs.getInt("times") > 1000){
 					value = rs.getInt("times");
 				}
 			}
