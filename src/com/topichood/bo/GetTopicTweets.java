@@ -49,27 +49,31 @@ public class GetTopicTweets extends HttpServlet {
 //		String timeSpan = jo.getString("time");
 //		JSONArray neighborsjo = jo.getJSONArray("neighbors");
 		String timeSpan = request.getParameter("time");
-		String neighbors = request.getParameter("neighborhood");
+		String neighborsRaw = request.getParameter("neighborhood");
 		String topics = request.getParameter("topics");
-		String[] topicIds = topics.split(",");
-		//get neighborhoods list
-		if(neighbors == null){
-			neighbors = "'Downtown'";
+		String neighbors = "'Downtown','Shadyside'";
+		String[] topicIds = {"20"};
+		if(topics != null){
+			topicIds = topics.split(",");
+		}	
+		if(neighbors != null){
+			neighbors = neighborsRaw.replace('+', ' ');
 		}
+		System.out.println(neighbors);
 		
 		//get time
 		String timeStr = "";
 		int unit;
 		if(timeSpan == null){
-			timeStr = "2015-01-08 0:0:0";
+			timeStr = "2015-01-13 0:0:0";
 			unit = 60*60*1000; //one hour
 		}
 		else if(timeSpan.equals("day")){
-			timeStr = "2015-01-08 0:0:0";
+			timeStr = "2015-01-13 0:0:0";
 			unit = 60*60*1000;  //one hour
 		}
 		else if(timeSpan.equals("week")){
-			timeStr = "2015-01-02 0:0:0";
+			timeStr = "2015-01-06 0:0:0";
 			unit = 60*60*24*1000;  //one day
 		}
 		else{//month
@@ -82,7 +86,7 @@ public class GetTopicTweets extends HttpServlet {
 		from = Timestamp.valueOf(timeStr);
 		
 		Timestamp to = new Timestamp(System.currentTimeMillis());
-		to = Timestamp.valueOf("2015-01-09 0:0:0");
+		to = Timestamp.valueOf("2015-01-14 0:0:0");
 		
 //		String s = "2015-02-01 0:0:0";
 //		String e = "2015-01-3 0:0:0";

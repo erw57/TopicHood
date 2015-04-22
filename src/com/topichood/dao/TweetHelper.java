@@ -107,7 +107,7 @@ public class TweetHelper {
     
     public void closeConn(){
     	try {
-			rs.close();
+			//rs.close();
 			st.close();
 	    	conn.close();
 		} catch (SQLException e) {
