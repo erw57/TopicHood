@@ -1,12 +1,25 @@
-var colorSet = ['#145694', '#9EB9E4', '#FF6A00', '#FAAA5E', '#22931A', '#82D571', '#C4111B', '#F47E7F', '#7D4BAC', '#B198C4'];
-var isOverflow = false;
-var isInit = false;
-// Element will be initialized to insert element into page;
-function Element() {
-    this.li = $('<li></li>');
-    this.label = $('<label for=\'\'></label>');
-    this.checkbox = $('<input type= \'checkbox\'></label>');
+var colorSet = ['#145694', '#9EB9E4', '#FF6A00', '#FAAA5E', '#22931A'];
+colorSet.push('#82D571', '#C4111B', '#F47E7F', '#7D4BAC', '#B198C4');
 
+function findIndex(obj, str) {
+    // Find the index of items in network data set
+    for (var i = 0; i < obj.length; i++) {
+        if (str === obj[i].label)
+            return obj[i].id;
+    }
+    return -1;
+}
+
+function showLoading() {
+    var height = $(document).height();
+    var width = $(document).width();
+    $('.mask').css('height', height);
+    $('.mask').css('width', width);
+    $('.mask').show();
+}
+
+function hideLoading() {
+    $('.mask').hide();
 }
 
 var mapLoader = {
@@ -36,6 +49,7 @@ var mapLoader = {
         neighborhood = neighborhood.replace(/\+/g, ' ');
         var time = $('.timelist').val() + '';
         if (!time) {
+            //default time-span value: 'day'
             time = 'day';
         }
         showLoading();
@@ -54,17 +68,17 @@ var mapLoader = {
                         nodes = [],
                         edges = [],
                         tweetsCount = 0;
-
+                    // prepare data set for the line chart & the pie chart
                     for (var q = 0; q < data.tags.length; q++) {
                         tags.push(data.tags[q].name);
                         tweetsCount += data.tags[q].volume;
                         pieChartData.push([data.tags[q].name, data.tags[q].proportion]);
                         lineChartData.push(data.tags[q].points);
-
                     }
                     $('#tweets-count').text(tweetsCount);
                     var i;
-                    // data.related.nodes
+                    // Construct the dataset for network graph,
+                    // including nodes and edges
                     for (i = 0; i < data.related.nodes.length; i++) {
                         nodes.push({
                             id: i,
@@ -76,7 +90,6 @@ var mapLoader = {
                             fontColor: 'white'
                         });
                     }
-
                     for (i = 0; i < data.related.relations.length; i++) {
                         edges.push({
                             from: findIndex(nodes, data.related.relations[i].from),
@@ -84,14 +97,13 @@ var mapLoader = {
                             value: data.related.relations[i].value
                         });
                     }
-                    console.log(nodes, edges);
                     //Convert local variable to function's variable
                     $this.tags = tags;
                     //Refresh dots
-                    console.log('success');
                     $this.myMap.featureLayer.setGeoJSON(GeoJson(data.data));
                     var count = 0;
-                    // Add class tags[k] to No.count <img>
+                    // Add class tags[k] to No.count <img>. Not useful in
+                    // new page loading mechanism
                     for (var k = 0; k < tags.length; k++) {
                         if (k === 0) {
                             count = 0;
@@ -111,21 +123,22 @@ var mapLoader = {
                         var img = $(this); //Dot on map.
                         var tweetId = $('.marker-description').text();
                         $('.leaflet-popup-content').html('');
+                        // Add event listener to the close button in tweet popup window
+                        // If clicked, hide the popup.
                         $('.leaflet-popup-content').append('<i class = "fa fa-times"></i>');
                         $('.leaflet-popup-content>i').click(function() {
                             $('.leaflet-popup').hide();
                         });
                         twttr.widgets.createTweet(tweetId, $('.leaflet-popup-content')[0]);
-                        //console.log($('.leaflet-popup-content').find('iframe').css('visibility'));
+                        // if the content of tweet cannot be loaded within 1000 ms
+                        // remove it and tell user that it has been deleted by its author
                         window.setTimeout(function() {
                             if ($('.leaflet-popup-content').find('iframe').css('visibility') == 'hidden') {
                                 $('.leaflet-popup-content').html('<p class=\'delete-tweet\'>Tweet has been deleted by author</p>');
                                 img.remove();
-
                             }
                         }, 1000);
                     });
-                    //Load dropdown menus
                     //DRAW PIE CHART AND LINE CHART
                     var linePainter = new DataPainter();
                     linePainter.paintLineChart(tags, lineChartData);
@@ -141,6 +154,7 @@ var mapLoader = {
         $.ajax({
             url: '/TopicHood/GetTopicNeighborList',
             success: function(data) {
+                // s ===> the content of topic menu
                 var s = '';
                 for (var i = 0; i < data.topicList.length; i++) {
                     if (i < 4) {
@@ -151,6 +165,7 @@ var mapLoader = {
                         s += data.topicList[i].name + '</option>';
                     }
                 }
+                // t ===> the content of neighborhood menu
                 var t = '';
                 for (i = 0; i < data.neighborList.length; i++) {
                     if (i < 3) {
@@ -168,11 +183,12 @@ var mapLoader = {
                     style: 'selectBox',
                     size: 10
                 });
-                //console.log($('.topicList'));
+                //When any selection in the control panel changes,
+                //reload the map and graph area;
                 $(document).on('change', '.topiclist', function() {
                     $this.addNode();
                 });
-                //load neighborlist
+                //Load neighborlist
                 $('.neighborlist').append(t);
                 $('.neighborlist').attr('data-live-search', 'true');
                 $('.neighborlist').selectpicker({
@@ -182,6 +198,7 @@ var mapLoader = {
                 $(document).on('change', '.neighborlist', function() {
                     $this.addNode();
                 });
+                //Load time-span list
                 $('.timelist').selectpicker({
                     style: 'selectBox',
                     size: 10
@@ -195,7 +212,9 @@ var mapLoader = {
     }
 };
 
+
 function GeoJson(data) {
+    //construct GeoJson object which is the parameter of this.addNode()
     nodes = [];
     // i = topic number
     for (var i = 0; i < data.length; i++) {
@@ -333,65 +352,25 @@ DataPainter.prototype = {
 
 
 $(document).ready(function() {
-    // Load Map
-    // use mapLoader.addNode() to refresh the view;
+    // Load Map. Use mapLoader.addNode() to refresh the view;
     L.mapbox.accessToken = 'pk.eyJ1IjoibGlhb2thaWVuIiwiYSI6IkNVSndxVlUifQ.7LsEhdgYXzlK4MH_U_6c0w';
+    //Initialize the map and menus
     mapLoader.onTokenAccessReady().initMenu();
 
 
     //Load Carousel
     $('#chart').owlCarousel({
-        //navigation : true, // Show next and prev buttons
         slideSpeed: 3000,
         paginationSpeed: 400,
         singleItem: true,
         mouseDrag: false
-    }); //Get data and display the line chart
-    console.log('reload');
-    //popup window
+    });
+    // Load popup menu
     $('.open-popup-link').magnificPopup({
         type: 'inline',
-        midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
+        // Allow opening popup on middle mouse click.
+        //Always set it to true if you don't provide alternative source in href.
+        midClick: true
     });
 
 });
-
-
-function onTopicClick() {
-    var isChecked = $(this).prop('checked');
-    var c = 0;
-    if ($(this).prop('checked') === false) {
-        $('.' + $(this).attr('id')).each(function() {
-            $(this).hide();
-        });
-    } else {
-        $('.' + $(this).attr('id')).each(function() {
-            $(this).show();
-        });
-    }
-}
-
-function quo(str) {
-    str = '\'' + str + '\'';
-    return str;
-}
-
-function findIndex(obj, str) {
-    for (var i = 0; i < obj.length; i++) {
-        if (str === obj[i].label)
-            return obj[i].id;
-    }
-    return -1;
-}
-
-function showLoading() {
-    var height = $(document).height();
-    var width = $(document).width();
-    $('.mask').css('height', height);
-    $('.mask').css('width', width);
-    $('.mask').show();
-}
-
-function hideLoading() {
-    $('.mask').hide();
-}
