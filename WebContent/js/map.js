@@ -33,9 +33,7 @@ var mapLoader = {
             neighborhood += neighbors[i];
         }
         neighborhood = neighborhood.slice(0, neighborhood.length - 1);
-        console.log(neighborhood);
         neighborhood = neighborhood.replace(/\+/g, ' ');
-        console.log(neighborhood);
         var time = $('.timelist').val() + '';
         if (!time) {
             time = 'day';
@@ -50,16 +48,21 @@ var mapLoader = {
                 'time': time
             },
             success: function(data) {
-                    var tags = [];
-                    var pieChartData = [];
-                    var lineChartData = [];
-                    var nodes = [];
-                    var edges = [];
+                    var tags = [],
+                        pieChartData = [],
+                        lineChartData = [],
+                        nodes = [],
+                        edges = [],
+                        tweetsCount = 0;
+
                     for (var q = 0; q < data.tags.length; q++) {
                         tags.push(data.tags[q].name);
+                        tweetsCount += data.tags[q].volume;
                         pieChartData.push([data.tags[q].name, data.tags[q].proportion]);
                         lineChartData.push(data.tags[q].points);
+
                     }
+                    $('#tweets-count').text(tweetsCount);
                     var i;
                     // data.related.nodes
                     for (i = 0; i < data.related.nodes.length; i++) {
@@ -339,14 +342,15 @@ $(document).ready(function() {
         //navigation : true, // Show next and prev buttons
         slideSpeed: 3000,
         paginationSpeed: 400,
-        singleItem: true
+        singleItem: true,
+        mouseDrag: false
     }); //Get data and display the line chart
     console.log('reload');
     //popup window
     $('.open-popup-link').magnificPopup({
-		  type:'inline',
-		  midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
-	});
+        type: 'inline',
+        midClick: true // Allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source in href.
+    });
 
 });
 

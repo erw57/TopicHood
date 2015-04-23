@@ -17,27 +17,25 @@
     <link rel="stylesheet" href="css/magnific-popup.css" />
     <link rel="stylesheet" href="css/loaders.min.css" />
     <link rel="stylesheet" href="css/base.css" />
-    
-
 </head>
 
 <body>
-	<div class="mask">
-	<div class="loader-inner ball-spin-fade-loader loading">
-	     <div></div>
-	       <div></div>
-	       <div></div>
-	       <div></div>
-	       <div></div>
-	       <div></div>
-	       <div></div>
-	       <div></div>
-	 </div>
-	 </div>
+    <div class="mask">
+        <div class="loader-inner ball-spin-fade-loader loading">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
     <nav>
         <!-- <img src="logo.png" alt="TopicHood"> -->
         <p class="title">Topic Hood</p>
-        <p><span></span>People talked about</p>
+        <p><span id="tweets-count"></span> tweets talked about</p>
         <select class="topiclist selectBox" multiple data-width="250px" data-max-options="10">
         </select>
         <p> in </p>
@@ -62,18 +60,19 @@
                     <p>Distribution of selected topics</p>
                     <svg/>
                 </section>
-                <section id="chart-network" class="item">
-                    <svg/>
+                <section class="item">
+                    <p>Related topics</p>
+                    <div id="chart-network"></div>
                 </section>
             </section>
         </aside>
     </div>
     <!--popup window  -->
     <div id="test-popup" data-effect="mfp-newspaper" class="white-popup mfp-hide">
-	  <h1 class="text-center">Help</h1>
-	  <hr />
-	  <p>asdfasdfasdf</p>
-	</div>
+        <h1 class="text-center">Help</h1>
+        <hr />
+        <p>asdfasdfasdf</p>
+    </div>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/owl.carousel/owl-carousel/owl.carousel.min.js"></script>
     <script src="bower_components/d3/d3.min.js" charset="utf-8"></script>
@@ -83,7 +82,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/3.11.0/vis.min.js"></script>
     <script src="https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.js"></script>
     <!-- Magnific Popup core JS file -->
-	<script src="js/jquery.magnific-popup.js"></script>
+    <script src="js/jquery.magnific-popup.js"></script>
     <!-- Load Twitter Widget-->
     <script src="js/get.js"></script>
     <script src="js/map.js"></script>

@@ -18,3 +18,19 @@
 *.prefs
 
 .settings/org.eclipse.jdt.core.prefs
+
+TopicHood/README
+
+TopicHood/.settings/org.eclipse.wst.jsdt.ui.superType.container
+
+TopicHood/.settings/org.eclipse.wst.jsdt.ui.superType.name
+
+TopicHood/.settings/org.eclipse.wst.common.project.facet.core.xml
+
+TopicHood/.settings/org.eclipse.wst.common.component
+
+TopicHood/.settings/.jsdtscope
+
+TopicHood/.project
+
+*.prefs
