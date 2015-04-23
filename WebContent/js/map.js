@@ -102,17 +102,19 @@ var mapLoader = {
                             var mapDot = $('.leaflet-marker-pane').find('img')[x + count];
                             if (mapDot && !mapDot.classList.contains(tags[k])) {
                                 mapDot.classList.add(tags[k]);
-
-                            } else {}
-
+                            }
                         }
                     } // end for(){}
                     // addEventListenr to img (dots);
                     $('.leaflet-marker-pane').find('img').click(function() {
+                        $('.leaflet-popup').show();
                         var img = $(this); //Dot on map.
                         var tweetId = $('.marker-description').text();
-                        //console.log(tweetId);
                         $('.leaflet-popup-content').html('');
+                        $('.leaflet-popup-content').append('<i class = "fa fa-times"></i>');
+                        $('.leaflet-popup-content>i').click(function() {
+                            $('.leaflet-popup').hide();
+                        });
                         twttr.widgets.createTweet(tweetId, $('.leaflet-popup-content')[0]);
                         //console.log($('.leaflet-popup-content').find('iframe').css('visibility'));
                         window.setTimeout(function() {
