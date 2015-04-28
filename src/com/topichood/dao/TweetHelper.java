@@ -40,6 +40,9 @@ public class TweetHelper {
 				//t.setCreatedAt(rs.getString("created_at"));
 				tweets.add(t);
 			}
+			rs.close();
+			st.close();
+			//conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -59,6 +62,9 @@ public class TweetHelper {
 			if(rs.next()){
 				count = rs.getInt("count(*)");
 			}
+			rs.close();
+			st.close();
+			//conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -91,6 +97,9 @@ public class TweetHelper {
     		t.setImgUrl(rs.getString("profile_image_url"));
     		t.setCreatedAt(rs.getTimestamp("created_at"));
     	}
+    	rs.close();
+    	st.close();
+    	//conn.close();
     	return t;
     }
     
@@ -102,13 +111,16 @@ public class TweetHelper {
     	while(rs.next()){
     		neighbors.add(rs.getString("neighborhood"));
     	}
+    	rs.close();
+    	st.close();
+    	//conn.close();
     	return neighbors;
     }
     
     public void closeConn(){
     	try {
 			//rs.close();
-			st.close();
+			//st.close();
 	    	conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

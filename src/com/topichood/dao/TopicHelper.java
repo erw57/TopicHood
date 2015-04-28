@@ -36,6 +36,9 @@ public class TopicHelper {
 				Topic p = new Topic(rs.getInt("g.id"), rs.getString("g.tag"), rs.getInt("count(g.tag)"));
 				topics.add(p);
 			}
+			rs.close();
+			st.close();
+			//conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -56,6 +59,9 @@ public class TopicHelper {
     		Topic t = new Topic(rs.getInt("g.id"),rs.getString("g.tag"),rs.getInt("count(g.tag)"));
     		tlist.add(t);
     	}
+    	rs.close();
+    	st.close();
+    	//conn.close();
     	System.out.println(tlist.size());
     	return tlist;
     }
@@ -72,6 +78,9 @@ public class TopicHelper {
 	    			tlist.add(t);
 	    		}
 	    	}
+			rs.close();
+			st.close();
+			//conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -89,6 +98,9 @@ public class TopicHelper {
 			while(rs.next()){
 				list.add(rs.getString("tag2"));
 			}
+			rs.close();
+			st.close();
+			//conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -107,6 +119,9 @@ public class TopicHelper {
 					value = rs.getInt("times");
 				}
 			}
+			rs.close();
+			st.close();
+			//conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -117,7 +132,7 @@ public class TopicHelper {
     public void closeConn(){
     	try {
 			//rs.close();
-			st.close();
+			//st.close();
 	    	conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -48,15 +48,17 @@ public class GetTopicTweets extends HttpServlet {
 //		jo = ReadJSON.readJson(request);
 //		String timeSpan = jo.getString("time");
 //		JSONArray neighborsjo = jo.getJSONArray("neighbors");
+		
 		String timeSpan = request.getParameter("time");
 		String neighborsRaw = request.getParameter("neighborhood");
+		System.out.println("nei:"+neighborsRaw);
 		String topics = request.getParameter("topics");
 		String neighbors = "'Downtown','Shadyside'";
 		String[] topicIds = {"20"};
-		if(topics != null){
+		if(topics != null && !topics.equals("null")){
 			topicIds = topics.split(",");
 		}	
-		if(neighbors != null){
+		if(neighborsRaw != null && !neighborsRaw.equals("\'null\'")){
 			neighbors = neighborsRaw.replace('+', ' ');
 		}
 		System.out.println(neighbors);

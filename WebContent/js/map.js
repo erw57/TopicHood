@@ -52,101 +52,107 @@ var mapLoader = {
             //default time-span value: 'day'
             time = 'day';
         }
-        showLoading();
-        $.ajax({
-            url: 'GetTopicTweets',
-            type: 'POST',
-            data: {
-                'topics': topics,
-                'neighborhood': neighborhood,
-                'time': time
-            },
-            success: function(data) {
-                    var tags = [],
-                        pieChartData = [],
-                        lineChartData = [],
-                        nodes = [],
-                        edges = [],
-                        tweetsCount = 0;
-                    // prepare data set for the line chart & the pie chart
-                    for (var q = 0; q < data.tags.length; q++) {
-                        tags.push(data.tags[q].name);
-                        tweetsCount += data.tags[q].volume;
-                        pieChartData.push([data.tags[q].name, data.tags[q].proportion]);
-                        lineChartData.push(data.tags[q].points);
-                    }
-                    $('#tweets-count').text(tweetsCount);
-                    var i;
-                    // Construct the dataset for network graph,
-                    // including nodes and edges
-                    for (i = 0; i < data.related.nodes.length; i++) {
-                        nodes.push({
-                            id: i,
-                            label: data.related.nodes[i],
-                            color: {
-                                background: colorSet[i],
-                                border: colorSet[i],
-                            },
-                            fontColor: 'white'
-                        });
-                    }
-                    for (i = 0; i < data.related.relations.length; i++) {
-                        edges.push({
-                            from: findIndex(nodes, data.related.relations[i].from),
-                            to: findIndex(nodes, data.related.relations[i].to),
-                            value: data.related.relations[i].value
-                        });
-                    }
-                    //Convert local variable to function's variable
-                    $this.tags = tags;
-                    //Refresh dots
-                    $this.myMap.featureLayer.setGeoJSON(GeoJson(data.data));
-                    var count = 0;
-                    // Add class tags[k] to No.count <img>. Not useful in
-                    // new page loading mechanism
-                    for (var k = 0; k < tags.length; k++) {
-                        if (k === 0) {
-                            count = 0;
-                        } else {
-                            count += data.data[k - 1].tweets.length;
+        if(topics == 'null' || neighborhood == "'null'"){
+        	alert("please select at least one topic and one neighborhood");
+        }
+        else{
+        	showLoading();
+            $.ajax({
+                url: 'GetTopicTweets',
+                type: 'POST',
+                data: {
+                    'topics': topics,
+                    'neighborhood': neighborhood,
+                    'time': time
+                },
+                success: function(data) {
+                        var tags = [],
+                            pieChartData = [],
+                            lineChartData = [],
+                            nodes = [],
+                            edges = [],
+                            tweetsCount = 0;
+                        // prepare data set for the line chart & the pie chart
+                        for (var q = 0; q < data.tags.length; q++) {
+                            tags.push(data.tags[q].name);
+                            tweetsCount += data.tags[q].volume;
+                            pieChartData.push([data.tags[q].name, data.tags[q].proportion]);
+                            lineChartData.push(data.tags[q].points);
                         }
-                        for (var x = 0; x < data.data[k].tweets.length; x++) {
-                            var mapDot = $('.leaflet-marker-pane').find('img')[x + count];
-                            if (mapDot && !mapDot.classList.contains(tags[k])) {
-                                mapDot.classList.add(tags[k]);
-                            }
+                        $('#tweets-count').text(tweetsCount);
+                        var i;
+                        // Construct the dataset for network graph,
+                        // including nodes and edges
+                        for (i = 0; i < data.related.nodes.length; i++) {
+                            nodes.push({
+                                id: i,
+                                label: data.related.nodes[i],
+                                color: {
+                                    background: colorSet[i],
+                                    border: colorSet[i],
+                                },
+                                fontColor: 'white'
+                            });
                         }
-                    } // end for(){}
-                    // addEventListenr to img (dots);
-                    $('.leaflet-marker-pane').find('img').click(function() {
-                        $('.leaflet-popup').show();
-                        var img = $(this); //Dot on map.
-                        var tweetId = $('.marker-description').text();
-                        $('.leaflet-popup-content').html('');
-                        // Add event listener to the close button in tweet popup window
-                        // If clicked, hide the popup.
-                        $('.leaflet-popup-content').append('<i class = "fa fa-times"></i>');
-                        $('.leaflet-popup-content>i').click(function() {
-                            $('.leaflet-popup').hide();
-                        });
-                        twttr.widgets.createTweet(tweetId, $('.leaflet-popup-content')[0]);
-                        // if the content of tweet cannot be loaded within 1000 ms
-                        // remove it and tell user that it has been deleted by its author
-                        window.setTimeout(function() {
-                            if ($('.leaflet-popup-content').find('iframe').css('visibility') == 'hidden') {
-                                $('.leaflet-popup-content').html('<p class=\'delete-tweet\'>Tweet has been deleted by author</p>');
-                                img.remove();
+                        for (i = 0; i < data.related.relations.length; i++) {
+                            edges.push({
+                                from: findIndex(nodes, data.related.relations[i].from),
+                                to: findIndex(nodes, data.related.relations[i].to),
+                                value: data.related.relations[i].value
+                            });
+                        }
+                        //Convert local variable to function's variable
+                        $this.tags = tags;
+                        //Refresh dots
+                        $this.myMap.featureLayer.setGeoJSON(GeoJson(data.data));
+                        var count = 0;
+                        // Add class tags[k] to No.count <img>. Not useful in
+                        // new page loading mechanism
+                        for (var k = 0; k < tags.length; k++) {
+                            if (k === 0) {
+                                count = 0;
+                            } else {
+                                count += data.data[k - 1].tweets.length;
                             }
-                        }, 1000);
-                    });
-                    //DRAW PIE CHART AND LINE CHART
-                    var linePainter = new DataPainter();
-                    linePainter.paintLineChart(tags, lineChartData);
-                    linePainter.paintPieChart(pieChartData);
-                    linePainter.paintNetwork(nodes, edges);
-                    hideLoading();
-                } // end recall
-        }); //end ajax
+                            for (var x = 0; x < data.data[k].tweets.length; x++) {
+                                var mapDot = $('.leaflet-marker-pane').find('img')[x + count];
+                                if (mapDot && !mapDot.classList.contains(tags[k])) {
+                                    mapDot.classList.add(tags[k]);
+                                }
+                            }
+                        } // end for(){}
+                        // addEventListenr to img (dots);
+                        $('.leaflet-marker-pane').find('img').click(function() {
+                            $('.leaflet-popup').show();
+                            var img = $(this); //Dot on map.
+                            var tweetId = $('.marker-description').text();
+                            $('.leaflet-popup-content').html('');
+                            // Add event listener to the close button in tweet popup window
+                            // If clicked, hide the popup.
+                            $('.leaflet-popup-content').append('<i class = "fa fa-times"></i>');
+                            $('.leaflet-popup-content>i').click(function() {
+                                $('.leaflet-popup').hide();
+                            });
+                            twttr.widgets.createTweet(tweetId, $('.leaflet-popup-content')[0]);
+                            // if the content of tweet cannot be loaded within 1000 ms
+                            // remove it and tell user that it has been deleted by its author
+                            window.setTimeout(function() {
+                                if ($('.leaflet-popup-content').find('iframe').css('visibility') == 'hidden') {
+                                    $('.leaflet-popup-content').html('<p class=\'delete-tweet\'>Tweet has been deleted by author</p>');
+                                    img.remove();
+                                }
+                            }, 1000);
+                        });
+                        //DRAW PIE CHART AND LINE CHART
+                        var linePainter = new DataPainter();
+                        linePainter.paintLineChart(tags, lineChartData);
+                        linePainter.paintPieChart(pieChartData);
+                        linePainter.paintNetwork(nodes, edges);
+                        hideLoading();
+                    } // end recall
+            }); //end ajax
+        }
+        
         return this;
     },
     initMenu: function() {
